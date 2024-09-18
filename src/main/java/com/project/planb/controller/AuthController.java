@@ -27,6 +27,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResDto> login(@RequestBody MemberLoginReqDto reqDto) {
         TokenResDto tokenResDto = authService.login(reqDto);
-        return ResponseEntity.ok(tokenResDto);
+        // JWT 토큰을 응답 헤더에 추가
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + tokenResDto.accessToken()) // 액세스 토큰 추가
+                .body(tokenResDto);
     }
 }
