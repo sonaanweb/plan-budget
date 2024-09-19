@@ -5,7 +5,7 @@ import com.project.planb.dto.req.MemberLoginReqDto;
 import com.project.planb.dto.res.TokenResDto;
 import com.project.planb.entity.Member;
 import com.project.planb.exception.CustomException;
-import com.project.planb.exception.exceptionType.MemberExceptionType;
+import com.project.planb.exception.ErrorCode;
 import com.project.planb.jwt.JwtTokenProvider;
 import com.project.planb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class AuthService {
     public void join(MemberJoinReqDto reqDto) {
         if (memberRepository.existsByAccount(reqDto.account())) {
             // 중복회원 검증
-            throw new CustomException(MemberExceptionType.DUPLICATED_ACCOUNT);
+            throw new CustomException(ErrorCode.DUPLICATED_ACCOUNT);
         }
         Member member = Member.builder()
                 .account(reqDto.account())
@@ -55,13 +55,13 @@ public class AuthService {
         }
 
         // 로그인 실패 시 예외 발생
-        throw new CustomException(MemberExceptionType.LOGIN_FAILED);
+        throw new CustomException(ErrorCode.LOGIN_FAILED);
     }
 
     // 리프레시 토큰 처리 및 새로운 액세스 토큰 발급
     public ResponseEntity<TokenResDto> refreshAccessToken(String refreshToken) {
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new CustomException(MemberExceptionType.INVALID_TOKEN);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         String account = jwtTokenProvider.getAccountFromToken(refreshToken);
@@ -76,5 +76,10 @@ public class AuthService {
 
     public String getAccountFromToken(String token) {
         return jwtTokenProvider.getAccountFromToken(token);
+    }
+
+    // account를 통해 Member 엔티티를 조회
+    public Optional<Member> findByAccount(String account) {
+        return memberRepository.findByAccount(account);
     }
 }

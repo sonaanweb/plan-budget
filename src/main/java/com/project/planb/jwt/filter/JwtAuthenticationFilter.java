@@ -1,18 +1,19 @@
 package com.project.planb.jwt.filter;
 
+import com.project.planb.entity.Member;
+import com.project.planb.security.PrincipalDetails;
 import com.project.planb.service.AuthService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
 @Component
 @RequiredArgsConstructor
@@ -36,9 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 유효한 경우 계정 정보를 가져온다.
                 String account = authService.getAccountFromToken(token);
 
+                // Member 엔티티 조회
+                Member member = authService.findByAccount(account)
+                        .orElseThrow(() -> new RuntimeException("Member not found: " + account));
+
+                // PrincipalDetails 객체 생성
+                PrincipalDetails principalDetails = new PrincipalDetails(member);
+
                 // 인증된 사용자 정보 설정
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(account, null, new ArrayList<>());
+                        new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 // 유효하지 않은 토큰인 경우

@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
-    /*
-    유저가 사용할 카테고리 엔티티 고정된 게 아니므로 enum 대신 string 사용
-    */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
