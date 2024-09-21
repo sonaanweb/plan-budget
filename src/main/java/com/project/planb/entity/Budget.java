@@ -28,23 +28,22 @@ public class Budget {
     @Column(name = "budget_amount", nullable = false)
     private Integer amount;
 
-    // 통계 비율
-    @Column(name = "rate", nullable = false)
-    private Double rate;
+    @Column(name = "year", nullable = false)
+    private int year;
+
+    @Column(name = "month", nullable = false)
+    private int month;
 
     @Builder
-    public Budget(Member member, Category category, Integer amount, Double rate) {
+    public Budget(Member member, Category category, Integer amount, int year, int month) {
         this.member = member;
         this.category = category;
         this.amount = amount != null ? amount : 0;
-        this.rate = rate != null ? rate : 0;
+        this.year = year; // 년 설정
+        this.month = month; // 월 설정
     }
 
     public void updateAmount(Integer amount) {
         this.amount = amount;
-    }
-
-    public void updateRate(Double rate) {
-        this.rate = rate;
     }
 }
