@@ -38,6 +38,9 @@ public class BudgetService {
 
         budgetRepository.save(budget);
 
+        // 평균 갱신 메서드 호출
+        updateAverageRate(category);
+
         return new BudgetResDto(
                 budget.getId(),
                 category.getCategoryName(),
@@ -59,5 +62,17 @@ public class BudgetService {
                         budget.getAmount()
                 ))
                 .toList(); // toList (java 16이상)
+    }
+
+    // 카테고리별 예산 평균 메서드
+    private void updateAverageRate(Category category) {
+        List<Budget> budgets = budgetRepository.findByCategory(category);
+        double average = budgets.stream()
+                .mapToInt(Budget::getAmount)
+                .average()
+                .orElse(0);
+
+        category.updateAverageRate((int) average);
+        categoryRepository.save(category); // 카테고리에 저장
     }
 }
