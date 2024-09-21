@@ -19,6 +19,6 @@ public class CategoryService {
         // OrderByIdAsc : 조회할 때 enum 열거형 순
         return categoryRepository.findAllByOrderByIdAsc().stream()
                 .map(category -> new CategoryResDto(category.getId(), category.getCategoryName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
