@@ -29,7 +29,7 @@ public class BudgetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         Member member = principalDetails.getMember(); // Member 객체
-        log.error("예산 생성 memberId: {}", member.getId());
+        log.info("예산 생성 memberId: {}", member.getId());
 
         BudgetResDto budgetResDto = budgetService.createBudget(budgetCreateReqDto, member);
         return ResponseEntity.ok(budgetResDto);

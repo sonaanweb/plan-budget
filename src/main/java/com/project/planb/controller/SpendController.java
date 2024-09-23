@@ -60,4 +60,16 @@ public class SpendController {
     }
 
     // 지출 삭제
+    @DeleteMapping("/{spendId}")
+    public ResponseEntity<Void> deleteSpend(
+            @PathVariable("spendId") Long spendId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Member member = principalDetails.getMember();
+
+        log.info("지출 삭제 memberId: {}, spendId: {}", member.getId(), spendId);
+
+        spendService.deleteSpend(spendId, member);
+        return ResponseEntity.noContent().build();
+    }
 }

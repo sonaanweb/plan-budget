@@ -73,6 +73,19 @@ public class SpendService {
         );
     }
 
+    // 지출 삭제
+    @Transactional
+    public void deleteSpend(Long spendId, Member member) {
+        Spend spend = spendRepository.findById(spendId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
+
+        if (!spend.getMember().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        spendRepository.delete(spend);
+    }
+
     // 리스트 조회 todo: 요구사항 별 추가할 것
     public List<Spend> getSpendsByMember(Member member) {
         return spendRepository.findByMember(member);
