@@ -30,8 +30,8 @@ public class CategoryServiceTest {
     @DisplayName("카테고리 목록 조회 테스트")
     @Test
     void getAllCategories() {
-        Category category1 = new Category(1L, "Food",0);
-        Category category2 = new Category(2L, "Transport",0);
+        Category category1 = new Category(1L, "Food");
+        Category category2 = new Category(2L, "Transport");
 
         // order ASC 해줬기때문에 순서 바뀌면 fail (success)
         when(categoryRepository.findAllByOrderByIdAsc()).thenReturn(Arrays.asList(category1, category2));
