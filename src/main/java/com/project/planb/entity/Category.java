@@ -19,23 +19,13 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String categoryName;
 
-    @Column(nullable = false)
-    Integer averageRate;
-
     @Builder
-    public Category(String categoryName, Integer averageRate){
+    public Category(String categoryName){
         this.categoryName = categoryName;
-        this.averageRate = averageRate != null ? averageRate : 0;
     }
 
-    public Category(Long id, String categoryName, Integer averageRate) {
+    public Category(Long id, String categoryName) {
         this.id = id;
         this.categoryName = categoryName;
-        this.averageRate = averageRate != null ? averageRate : 0;
-    }
-
-    // 예산 카테고리 평균값 업데이트
-    public void updateAverageRate(Integer averageRate){
-        this.averageRate = averageRate;
     }
 }

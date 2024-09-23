@@ -24,7 +24,6 @@ public class Budget {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    // 예산 총액
     @Column(name = "budget_amount", nullable = false)
     private Integer amount;
 
@@ -39,11 +38,7 @@ public class Budget {
         this.member = member;
         this.category = category;
         this.amount = amount != null ? amount : 0;
-        this.year = year; // 년 설정
-        this.month = month; // 월 설정
-    }
-
-    public void updateAmount(Integer amount) {
-        this.amount = amount;
+        this.year = year;
+        this.month = month;
     }
 }

@@ -9,6 +9,7 @@ import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
 import com.project.planb.repository.BudgetRepository;
 import com.project.planb.repository.CategoryRepository;
+import com.project.planb.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class BudgetService {
 
     private final CategoryRepository categoryRepository;
     private final BudgetRepository budgetRepository;
+    private final MemberRepository memberRepository;
 
     // 예산 생성
     @Transactional
@@ -37,9 +39,6 @@ public class BudgetService {
                 .build();
 
         budgetRepository.save(budget);
-
-        // 평균 갱신 메서드 호출
-        updateAverageRate(category);
 
         return new BudgetResDto(
                 budget.getId(),
@@ -62,17 +61,5 @@ public class BudgetService {
                         budget.getAmount()
                 ))
                 .toList(); // toList (java 16이상)
-    }
-
-    // 카테고리별 예산 평균 메서드
-    private void updateAverageRate(Category category) {
-        List<Budget> budgets = budgetRepository.findByCategory(category);
-        double average = budgets.stream()
-                .mapToInt(Budget::getAmount)
-                .average()
-                .orElse(0);
-
-        category.updateAverageRate((int) average);
-        categoryRepository.save(category); // 카테고리에 저장
     }
 }
