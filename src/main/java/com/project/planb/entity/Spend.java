@@ -48,4 +48,13 @@ public class Spend {
         this.memo = memo;
         this.isExcludedSum = isExcludedSum != null ? isExcludedSum : false;  // 기본값 false(제외하지 않음)
     }
+
+    // 수정 메서드
+    public void spendUpdate(LocalDate spendAt, Category category, Integer amount, String memo, Boolean isExcludedSum) {
+        this.spendAt = spendAt;
+        this.category = category;
+        this.amount = amount;
+        this.memo = memo;
+        this.isExcludedSum = isExcludedSum != null ? isExcludedSum : false;  // 기본값 false(제외하지 않음)
+    }
 }
