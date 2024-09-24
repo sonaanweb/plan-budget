@@ -62,10 +62,10 @@ public class ConsultingService {
                             member.getId(), categoryId, today.getYear(), today.getMonthValue()
                     ).orElseThrow(() -> new CustomException(ErrorCode.BUDGET_NOT_FOUND));
 
-                    int dailyBudget = budget.getAmount() / today.lengthOfMonth();
+                    int dailyBudget = (int) Math.round((double) budget.getAmount() / today.lengthOfMonth());
 
                     // 위험도 계산
-                    double risk = (double) spentAmount / dailyBudget * 100;
+                    int risk = (int) Math.round((double) spentAmount / dailyBudget * 100); // 반올림
 
                     return new CategorySpendDto(entry.getValue().get(0).getCategory().getCategoryName(), dailyBudget, spentAmount, risk);
                 })
