@@ -1,6 +1,7 @@
 package com.project.planb.service;
 
 import com.project.planb.dto.req.SpendReqDto;
+import com.project.planb.dto.res.SpendDetailDto;
 import com.project.planb.dto.res.SpendResDto;
 import com.project.planb.entity.Category;
 import com.project.planb.entity.Member;
@@ -93,7 +94,7 @@ public class SpendService {
     }
 
 
-    // 지출 조회 메서드
+    // 지출 목록 조회 메서드
     public SpendResDto getSpends(Member member, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
         List<Spend> spends = spendQRepository.searchSpends(member.getId(), startDate, endDate, categoryId, minAmount, maxAmount, null);
 
@@ -120,5 +121,25 @@ public class SpendService {
                 .toList();
 
         return new SpendResDto(totalAmount, categoryAmountsMap, spendDetails);
+    }
+
+    // 지출 상세
+    public SpendDetailDto getSpendDetail(Member member, Long spendId) {
+        Spend spend = spendRepository.findByIdAndMember(spendId, member)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
+
+        if (!spend.getMember().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        return new SpendDetailDto(
+                spend.getId(),
+                spend.getSpendAt(),
+                spend.getCategory().getId(),
+                spend.getCategory().getCategoryName(),
+                spend.getAmount(),
+                spend.getMemo(),
+                spend.getIsExcludedSum()
+        );
     }
 }

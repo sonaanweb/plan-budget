@@ -1,6 +1,7 @@
 package com.project.planb.controller;
 
 import com.project.planb.dto.req.SpendReqDto;
+import com.project.planb.dto.res.SpendDetailDto;
 import com.project.planb.dto.res.SpendResDto;
 import com.project.planb.entity.Member;
 import com.project.planb.exception.CustomException;
@@ -49,7 +50,7 @@ public class SpendController {
     최소, 최대 금액으로 조회
     합계제외 처리한 지출은 목록에 포함되지만, 모든 지출 합계에서는 제외처리
     */
-    // 지출 조회
+    // 지출 목록 조회
     @GetMapping
     public ResponseEntity<SpendResDto> getSpends(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -83,6 +84,17 @@ public class SpendController {
 
         SpendResDto spends = spendService.getSpends(member, startDate, endDate, categoryId, minAmount, maxAmount);
         return ResponseEntity.ok(spends);
+    }
+
+    // 지출 상세 조회
+    @GetMapping("/{spendId}")
+    public ResponseEntity<SpendDetailDto> getSpendDetail(
+            @PathVariable("spendId") Long spendId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Member member = principalDetails.getMember();
+        SpendDetailDto spendDetail = spendService.getSpendDetail(member, spendId);
+        return ResponseEntity.ok(spendDetail);
     }
 
 
