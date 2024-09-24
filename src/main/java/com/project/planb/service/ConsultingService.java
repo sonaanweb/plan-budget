@@ -8,9 +8,13 @@ import com.project.planb.entity.Spend;
 import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
 import com.project.planb.repository.BudgetRepository;
+import com.project.planb.repository.MemberRepository;
 import com.project.planb.repository.SpendRepository;
+import com.project.planb.utils.NotificationUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +29,7 @@ public class ConsultingService {
 
     private final SpendRepository spendRepository;
     private final BudgetRepository budgetRepository;
+    private final MemberRepository memberRepository;
 
     public TodaySpendDto getTodaySpend(Member member) {
         // 1. 오늘 날짜
@@ -84,5 +89,20 @@ public class ConsultingService {
 
         // 응답값
         return new TodaySpendDto(totalSpentAmount, recommendedAmount, totalRisk, categorySpendDto);
+    }
+
+    @Transactional
+    // @Scheduled(cron = "0 * * * * ?") 1분 TEST
+    @Scheduled(cron = "0 0 20 * * ?") // 매일 20:00에 실행
+    public void sendDailyNotifications() {
+        List<Member> members = memberRepository.findAll(); // TEST : 모든 회원 todo: 알림 승인한 회원만 + 예외처리 필요
+
+        for (Member member : members) {
+            // 각 회원의 오늘 지출 정보 가져오기
+            TodaySpendDto todaySpend = getTodaySpend(member);
+            String message = NotificationUtils.createNotificationMessage(member, todaySpend);
+
+            log.info("회원 {}의 오늘 지출 알림: {}", member.getId(), message);
+        }
     }
 }
