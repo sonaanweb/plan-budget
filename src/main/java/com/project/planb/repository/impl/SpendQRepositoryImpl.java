@@ -17,6 +17,7 @@ public class SpendQRepositoryImpl implements SpendQRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    // 지출 목록 조회
     @Override
     public List<Spend> searchSpends(Long memberId, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount, Boolean isExcludedSum) {
 
@@ -48,4 +49,16 @@ public class SpendQRepositoryImpl implements SpendQRepository {
                 .where(builder)
                 .fetch();
     }
+
+/* 오늘의 지출 안내
+    @Override
+    public List<Spend> findTodaySpends(Long memberId, LocalDate today) {
+        QSpend spend = QSpend.spend;
+        return queryFactory
+                .selectFrom(spend)
+                .where(spend.member.id.eq(memberId)
+                        .and(spend.spendAt.eq(today)))
+                .fetch();
+    }
+*/
 }

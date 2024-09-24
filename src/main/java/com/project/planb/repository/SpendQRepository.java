@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface SpendQRepository {
     List<Spend> searchSpends(Long memberId, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount, Boolean isExcludedSum);
+
+    // List<Spend> findTodaySpends(Long memberId, LocalDate today);
 }
