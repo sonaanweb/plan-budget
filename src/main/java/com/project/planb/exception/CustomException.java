@@ -9,4 +9,9 @@ public class CustomException extends RuntimeException {
         super(e.getMessage());
         this.errorCode = e;
     }
+
+    public CustomException(ErrorCode errorCode, String message) {
+        super(message); // 메시지를 String으로 전달
+        this.errorCode = errorCode;
+    }
 }
