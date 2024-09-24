@@ -1,7 +1,10 @@
 package com.project.planb.controller;
 
 import com.project.planb.dto.req.SpendReqDto;
+import com.project.planb.dto.res.SpendResDto;
 import com.project.planb.entity.Member;
+import com.project.planb.exception.CustomException;
+import com.project.planb.exception.ErrorCode;
 import com.project.planb.security.PrincipalDetails;
 import com.project.planb.service.SpendService;
 import jakarta.validation.Valid;
@@ -11,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -37,12 +43,48 @@ public class SpendController {
     }
 
     /*
-    지출 조회는 `기간별 조회가 베이스이다.` | 기간을 선택 안 했을 때 전체 조회도 고려 => 프론트단 생각해보기
+    지출 조회는 `기간별 조회가 베이스이다.`
     조회된 모든 기간의 지출 합계와 카테고리 별 지출 합계를 같이 반환
     특정 카테고리만으로도 조회할 수 있다
     최소, 최대 금액으로 조회
     합계제외 처리한 지출은 목록에 포함되지만, 모든 지출 합계에서는 제외처리
     */
+    // 지출 조회
+    @GetMapping
+    public ResponseEntity<SpendResDto> getSpends(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Integer minAmount,
+            @RequestParam(required = false) Integer maxAmount) {
+
+        // 기본값 설정 = null 일 경우
+        if (startDate == null) {
+            startDate = LocalDate.now().withDayOfMonth(1); // 현재 달의 1일
+        }
+
+        if (endDate == null) {
+            endDate = LocalDate.now(); // 현재 날짜
+        }
+
+        // 유효성 검사
+        if (startDate.isAfter(endDate)) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "시작일은 종료일 이전이어야 합니다.");
+        }
+
+        if (minAmount != null && maxAmount != null && maxAmount < minAmount) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE, "최소 금액은 최대 금액보다 작아야 합니다.");
+        }
+
+        Member member = principalDetails.getMember();
+
+        log.info("지출 조회 memberId: {}", member.getId());
+
+        SpendResDto spends = spendService.getSpends(member, startDate, endDate, categoryId, minAmount, maxAmount);
+        return ResponseEntity.ok(spends);
+    }
+
 
     // 지출 수정
     @PatchMapping("/{spendId}")
