@@ -97,8 +97,10 @@ public class SpendService {
     public SpendResDto getSpends(Member member, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
         List<Spend> spends = spendQRepository.searchSpends(member.getId(), startDate, endDate, categoryId, minAmount, maxAmount, null);
 
-        // 총액 계산
-        Integer totalAmount = spends.stream().mapToInt(Spend::getAmount).sum();
+        Integer totalAmount = spends.stream()
+                .filter(spend -> !spend.getIsExcludedSum()) // 합계 제외 필터링
+                .mapToInt(Spend::getAmount)
+                .sum();
 
         // 카테고리별 지출 총액 계산
         Map<Long, Integer> categoryAmountsMap = spends.stream()

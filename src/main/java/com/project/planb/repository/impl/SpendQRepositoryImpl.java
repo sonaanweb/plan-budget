@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class SpendRepositoryCustomImpl implements SpendQRepository {
+public class SpendQRepositoryImpl implements SpendQRepository {
 
     private final JPAQueryFactory queryFactory;
 
