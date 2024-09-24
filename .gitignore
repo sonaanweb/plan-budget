@@ -38,3 +38,6 @@ out/
 
 ### properties ###
 *.properties
+
+# QueryDSL generated 클래스
+/src/main/generated/

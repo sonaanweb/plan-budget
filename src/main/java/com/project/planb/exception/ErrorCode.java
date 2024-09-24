@@ -10,6 +10,8 @@ public enum ErrorCode {
 
     /* General Exception 500 */
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류입니다."),
+
+    /* error */
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 입력 값입니다."),
 
     /* Member Exception */

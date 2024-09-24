@@ -1,19 +1,25 @@
 package com.project.planb.service;
 
 import com.project.planb.dto.req.SpendReqDto;
+import com.project.planb.dto.res.SpendDetailDto;
+import com.project.planb.dto.res.SpendResDto;
 import com.project.planb.entity.Category;
 import com.project.planb.entity.Member;
 import com.project.planb.entity.Spend;
 import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
 import com.project.planb.repository.CategoryRepository;
+import com.project.planb.repository.SpendQRepository;
 import com.project.planb.repository.SpendRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,6 +28,7 @@ public class SpendService {
 
     private final SpendRepository spendRepository;
     private final CategoryRepository categoryRepository;
+    private final SpendQRepository spendQRepository;
 
     // 지출 생성
     @Transactional
@@ -86,8 +93,53 @@ public class SpendService {
         spendRepository.delete(spend);
     }
 
-    // 리스트 조회 todo: 요구사항 별 추가할 것
-    public List<Spend> getSpendsByMember(Member member) {
-        return spendRepository.findByMember(member);
+
+    // 지출 목록 조회 메서드
+    public SpendResDto getSpends(Member member, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
+        List<Spend> spends = spendQRepository.searchSpends(member.getId(), startDate, endDate, categoryId, minAmount, maxAmount, null);
+
+        Integer totalAmount = spends.stream()
+                .filter(spend -> !spend.getIsExcludedSum()) // 합계 제외 필터링
+                .mapToInt(Spend::getAmount)
+                .sum();
+
+        // 카테고리별 지출 총액 계산
+        Map<Long, Integer> categoryAmountsMap = spends.stream()
+                .collect(Collectors.groupingBy(spend -> spend.getCategory().getId(),
+                        Collectors.summingInt(Spend::getAmount)));
+
+        // SpendDetail 리스트로 변환
+        List<SpendResDto.SpendList> spendDetails = spends.stream()
+                .map(spend -> new SpendResDto.SpendList(
+                        spend.getId(),
+                        spend.getSpendAt(),
+                        spend.getCategory().getId(),
+                        spend.getAmount(),
+                        spend.getMemo(),
+                        spend.getIsExcludedSum()
+                ))
+                .toList();
+
+        return new SpendResDto(totalAmount, categoryAmountsMap, spendDetails);
+    }
+
+    // 지출 상세
+    public SpendDetailDto getSpendDetail(Member member, Long spendId) {
+        Spend spend = spendRepository.findByIdAndMember(spendId, member)
+                .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
+
+        if (!spend.getMember().getId().equals(member.getId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        return new SpendDetailDto(
+                spend.getId(),
+                spend.getSpendAt(),
+                spend.getCategory().getId(),
+                spend.getCategory().getCategoryName(),
+                spend.getAmount(),
+                spend.getMemo(),
+                spend.getIsExcludedSum()
+        );
     }
 }
