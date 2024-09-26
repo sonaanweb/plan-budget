@@ -1,15 +1,19 @@
 package com.project.planb.repository.impl;
 
+import com.project.planb.entity.Category;
 import com.project.planb.entity.QSpend;
 import com.project.planb.entity.Spend;
 import com.project.planb.repository.SpendQRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -61,4 +65,42 @@ public class SpendQRepositoryImpl implements SpendQRepository {
                 .fetch();
     }
 */
+
+    /**
+     * 통계
+     */
+
+    // 날짜 범위 내에서 해당 사용자의 지출 목록 LIST
+    @Override
+    public List<Spend> getSpendsByDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
+        QSpend spend = QSpend.spend;
+
+        return queryFactory
+                .selectFrom(spend)
+                .where(spend.member.id.eq(memberId)
+                        .and(spend.spendAt.between(startDate, endDate)))
+                .fetch();
+    }
+
+    // 지출한 금액을 카테고리별로 집계하여 총합 반환 MAP
+    @Override
+    public Map<Category, Integer> getTotalSpendByDateRangeGroupByCategory(Long memberId, LocalDate startDate, LocalDate endDate) {
+        QSpend spend = QSpend.spend;
+
+        // 쿼리
+        List<Tuple> results = queryFactory
+                .select(spend.category, spend.amount.sum())
+                .from(spend)
+                .where(spend.member.id.eq(memberId)
+                        .and(spend.spendAt.between(startDate, endDate)))
+                .groupBy(spend.category) // 카테고리별
+                .fetch();
+
+        // 결과 Map으로 변환
+        return results.stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(spend.category),
+                        tuple -> tuple.get(spend.amount.sum()) // 해당 카테고리의 총 지출액
+                ));
+    }
 }

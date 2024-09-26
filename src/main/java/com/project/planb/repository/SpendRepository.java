@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface SpendRepository extends JpaRepository<Spend, Long> {
+public interface SpendRepository extends JpaRepository<Spend, Long>,SpendQRepository{
     Optional<Spend> findByIdAndMember(Long spendId, Member member);
 
     // 오늘의 지출 - 단순 조회용이므로 queryDsl 사용 X

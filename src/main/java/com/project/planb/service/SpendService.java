@@ -9,7 +9,6 @@ import com.project.planb.entity.Spend;
 import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
 import com.project.planb.repository.CategoryRepository;
-import com.project.planb.repository.SpendQRepository;
 import com.project.planb.repository.SpendRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ public class SpendService {
 
     private final SpendRepository spendRepository;
     private final CategoryRepository categoryRepository;
-    private final SpendQRepository spendQRepository;
 
     // 지출 생성
     @Transactional
@@ -96,7 +94,7 @@ public class SpendService {
 
     // 지출 목록 조회 메서드
     public SpendResDto getSpends(Member member, LocalDate startDate, LocalDate endDate, Long categoryId, Integer minAmount, Integer maxAmount) {
-        List<Spend> spends = spendQRepository.searchSpends(member.getId(), startDate, endDate, categoryId, minAmount, maxAmount, null);
+        List<Spend> spends = spendRepository.searchSpends(member.getId(), startDate, endDate, categoryId, minAmount, maxAmount, null);
 
         Integer totalAmount = spends.stream()
                 .filter(spend -> !spend.getIsExcludedSum()) // 합계 제외 필터링
