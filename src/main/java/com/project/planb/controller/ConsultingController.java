@@ -4,6 +4,8 @@ import com.project.planb.dto.res.TodaySpendDto;
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
 import com.project.planb.service.ConsultingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
+@Tag(name="지출 안내 API", description = "사용자가 오늘 사용한 지출을 알려주는 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/spends/today")
@@ -23,6 +26,7 @@ public class ConsultingController {
     /*
     오늘의 지출 안내
     */
+    @Operation(summary = "오늘의 지출을 안내하고 등록한 예산과의 분석 및 위험도 체크")
     @GetMapping
     public ResponseEntity<TodaySpendDto> getTodaySpend(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 

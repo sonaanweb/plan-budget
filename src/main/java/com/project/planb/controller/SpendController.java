@@ -8,6 +8,8 @@ import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
 import com.project.planb.security.PrincipalDetails;
 import com.project.planb.service.SpendService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @Slf4j
+@Tag(name = "지출 API", description = "사용자 지출 CRUD")
 @RestController
 @RequestMapping("/api/spends")
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class SpendController {
     private final SpendService spendService;
 
     // 지출 등록
+    @Operation(summary = "카테고리별 지출을 등록합니다")
     @PostMapping
     public ResponseEntity<SpendReqDto> createSpend(
             @RequestBody @Valid SpendReqDto spendReqDto,
@@ -50,6 +54,7 @@ public class SpendController {
     합계제외 처리한 지출은 목록에 포함되지만, 모든 지출 합계에서는 제외처리
     */
     // 지출 목록 조회
+    @Operation(summary = "지출 목록 조회")
     @GetMapping
     public ResponseEntity<SpendResDto> getSpends(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -86,6 +91,7 @@ public class SpendController {
     }
 
     // 지출 상세 조회
+    @Operation(summary = "등록되어있는 지출 상세보기")
     @GetMapping("/{spendId}")
     public ResponseEntity<SpendDetailDto> getSpendDetail(
             @PathVariable("spendId") Long spendId,
@@ -98,6 +104,7 @@ public class SpendController {
 
 
     // 지출 수정
+    @Operation(summary = "등록되어있는 지출 수정")
     @PatchMapping("/{spendId}")
     public ResponseEntity<SpendReqDto> updateSpend(
             @PathVariable("spendId") Long spendId,
@@ -113,6 +120,7 @@ public class SpendController {
     }
 
     // 지출 삭제
+    @Operation(summary = "등록되어있는 지출 삭제")
     @DeleteMapping("/{spendId}")
     public ResponseEntity<Void> deleteSpend(
             @PathVariable("spendId") Long spendId,

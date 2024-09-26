@@ -5,6 +5,8 @@ import com.project.planb.dto.res.BudgetResDto;
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
 import com.project.planb.service.BudgetService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name="예산 API", description = "예산을 등록하고 등록된 예산 리스트를 조회하는 API")
 @Slf4j
 @RestController
 @RequestMapping("/api/budgets")
@@ -23,6 +26,7 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     // 예산 등록 year & month
+    @Operation(summary = "년/월을 지정하여 카테고리별 예산 등록")
     @PostMapping
     public ResponseEntity<BudgetResDto> createBudget(
             @RequestBody @Valid BudgetCreateReqDto budgetCreateReqDto,
@@ -36,6 +40,7 @@ public class BudgetController {
     }
 
     // 등록한 예산 리스트 조회
+    @Operation(summary = "사용자가 등록한 예산 리스트 조회")
     @GetMapping
     public ResponseEntity<List<BudgetResDto>> getBudgets(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {

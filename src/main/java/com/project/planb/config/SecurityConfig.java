@@ -3,7 +3,6 @@ package com.project.planb.config;
 import com.project.planb.jwt.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,12 +23,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable) // // CSRF 보호 비활성화
+        http.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/members/login").permitAll() // 로그인
-                        .requestMatchers(HttpMethod.POST, "/api/members/join").permitAll() // 회원가입
+                        .requestMatchers(
+                                "/v3/api-docs/**",   // Swagger API 문서
+                                "/swagger-ui/**",            // Swagger UI 페이지
+                                "/swagger-ui.html",          // Swagger UI HTML 페이지
+                                "/api/members/login",        // 로그인
+                                "/api/members/join"          // 회원가입
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터
 
