@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +42,11 @@ public class ConsultingService {
         List<Spend> spends = spendRepository.findTodaySpends(member, today);
 
         log.info("today spends : {}", spends);
+
+        // 데이터가 없는 경우
+        if (spends.isEmpty()) {
+            return new TodaySpendDto(0, 0, 0.0, List.of(), Optional.of("지출 데이터가 없습니다."));
+        }
 
         // 3. 총 지출 금액 계산
         int totalSpentAmount = spends.stream()
@@ -88,7 +94,7 @@ public class ConsultingService {
                 .orElse(0);
 
         // 응답값
-        return new TodaySpendDto(totalSpentAmount, recommendedAmount, totalRisk, categorySpendDto);
+        return new TodaySpendDto(totalSpentAmount, recommendedAmount, totalRisk, categorySpendDto, Optional.empty());
     }
 
     @Transactional
