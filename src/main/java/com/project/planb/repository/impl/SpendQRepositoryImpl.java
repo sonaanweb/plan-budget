@@ -51,6 +51,7 @@ public class SpendQRepositoryImpl implements SpendQRepository {
         return queryFactory
                 .selectFrom(spend)
                 .where(builder)
+                .orderBy(spend.spendAt.desc())
                 .fetch();
     }
 
@@ -79,6 +80,7 @@ public class SpendQRepositoryImpl implements SpendQRepository {
                 .selectFrom(spend)
                 .where(spend.member.id.eq(memberId)
                         .and(spend.spendAt.between(startDate, endDate)))
+                .orderBy(spend.spendAt.desc())
                 .fetch();
     }
 
