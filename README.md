@@ -1,5 +1,60 @@
-# 🪙 플랜비 (Plan-Budget)
-예산 관리 어플리케이션 플랜비
+# 📒 플랜비 (Plan-Budget)
+예산 및 지출 관리 어플리케이션 플랜비
+
+## 목차
+- [1. 프로젝트 개요](#1-프로젝트-개요)
+- [2. 프로젝트 관리](#2-프로젝트-관리)
+- [3. 기술 문서](#3-기술-문서)
+- [4. 트러블 슈팅](#4-트러블-슈팅)
+- [5. 회고](#5-회고)
+
+<br>
+
+### 1. 프로젝트 개요
+#### 프로젝트 설명
+#### 기술 스택
+<div align=left> 
+  <img src="https://img.shields.io/badge/java 17-007396?style=for-the-badge&logo=java&logoColor=white">
+  <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+  <img src="https://img.shields.io/badge/spring data jpa-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
+</div>
+
+<div align=left> 
+  <img src="https://img.shields.io/badge/mariadb-003545?style=for-the-badge&logo=mariadb&logoColor=white">
+  <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+  <img src="https://img.shields.io/badge/dbeaver-372923?style=for-the-badge&logo=dbeaver&logoColor=white">
+</div>
+
+<div align=left> 
+  <img src="https://img.shields.io/badge/intellij IDEA-000085?style=for-the-badge&logo=intellijidea&logoColor=white">
+  <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white">
+</div>
+
+### 2. 프로젝트 관리
+🗓️ 일정: 2024.09.12 ~ 2024.09.26
+| 날짜 | 활동 |
+| --- | --- |
+|  |   |
+|  |  |
+| |  |
+|  | |
+
+</details>
+
+<details>
+<summary><strong>작업 사이클</strong></summary>
+  
+1. 이슈 생성
+2. 브랜치 생성
+3. 코드 작성
+4. PR 생성
+5. main 브랜치로 Push & Merge
+</details>
+
+<details>
+<summary><strong>이슈 관리</strong></summary>
+<img src=https://github.com/user-attachments/assets/7a7194f5-17f1-4632-9be1-c2efa7fa47a5>
+</details>
 
 <details>
 <summary><strong>컨벤션</strong></summary>
@@ -37,3 +92,14 @@
     ex) [FIX] 내가 작성하지 않은 리뷰 볼 수 있는 버그 해결
     ```
 </details>
+
+### 3. 기술 문서
+- Swagger
+<img src=https://github.com/user-attachments/assets/557008f2-2c98-486d-a86c-d1409c473dd1>
+API 명세서, ERD, 디렉토리 구조 등
+
+### 4. 트러블 슈팅
+- 발생했던 문제와 해결 방법에 대한 설명
+
+### 5. 회고
+- 프로젝트 진행 후 느낀 점이나 배운 점
