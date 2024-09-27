@@ -1,6 +1,8 @@
 package com.project.planb.controller;
 
 import com.project.planb.dto.req.BudgetCreateReqDto;
+import com.project.planb.dto.req.BudgetFilterReqDto;
+import com.project.planb.dto.res.BudgetCreateResDto;
 import com.project.planb.dto.res.BudgetResDto;
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
@@ -28,18 +30,18 @@ public class BudgetController {
     // 예산 등록 year & month
     @Operation(summary = "년/월을 지정하여 카테고리별 예산 등록")
     @PostMapping
-    public ResponseEntity<BudgetResDto> createBudget(
+    public ResponseEntity<BudgetCreateResDto> createBudget(
             @RequestBody @Valid BudgetCreateReqDto budgetCreateReqDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Member member = principalDetails.getMember(); // Member 객체
+        Member member = principalDetails.getMember();
         log.info("예산 생성 memberId: {}", member.getId());
 
-        BudgetResDto budgetResDto = budgetService.createBudget(budgetCreateReqDto, member);
-        return ResponseEntity.ok(budgetResDto);
+        BudgetCreateResDto budgetCreateResDto = budgetService.createBudget(budgetCreateReqDto, member);
+        return ResponseEntity.ok(budgetCreateResDto);
     }
 
-    // 등록한 예산 리스트 조회
+    /* 등록한 예산 리스트 조회
     @Operation(summary = "사용자가 등록한 예산 리스트 조회")
     @GetMapping
     public ResponseEntity<List<BudgetResDto>> getBudgets(
@@ -49,5 +51,22 @@ public class BudgetController {
 
         List<BudgetResDto> budgets = budgetService.getBudgetsByMember(member);
         return ResponseEntity.ok(budgets);
+    }
+     */
+
+    // 등록한 예산 리스트 조회 (년/월 필터링)
+    @Operation(summary = "사용자가 등록한 예산 리스트 조회")
+    @GetMapping
+    public ResponseEntity<BudgetResDto> getBudgets(
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "month", required = false) Integer month,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Member member = principalDetails.getMember();
+        log.info("예산 조회 요청 memberId: {}, year: {}, month: {}", member.getId(), year, month);
+
+        BudgetFilterReqDto filterReqDto = new BudgetFilterReqDto(year, month);
+        BudgetResDto budgetResponse = budgetService.getBudgetsByMemberAndDate(member, filterReqDto);
+        return ResponseEntity.ok(budgetResponse);
     }
 }

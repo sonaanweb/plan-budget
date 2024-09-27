@@ -8,32 +8,36 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CategoryInit {
-    /*
-    동적 쿼리를 구성할 것이기 때문에 SQL파일을 추가하기보단 JAVA 초기화 클래스 생성 선택
-    */
+
     private final CategoryRepository categoryRepository;
 
     @Transactional
     @PostConstruct
-    public void init(){
-        List<Category> categories = new ArrayList<>();
+    public void init() {
+        // 이미 존재하는 카테고리 이름을 Set으로 저장하여 중복 확인 최소화
+        Set<String> existingCategories = categoryRepository.findAll()
+                .stream()
+                .map(Category::getCategoryName)
+                .collect(Collectors.toSet());
 
-        for(CategoryType type: CategoryType.values()){
-            if (!categoryRepository.existsByCategoryName(type.getCategoryName())) {
-                categories.add(Category.builder()
+        // 존재하지 않는 카테고리만 새로 생성
+        List<Category> categoriesToSave = List.of(CategoryType.values()).stream()
+                .filter(type -> !existingCategories.contains(type.getCategoryName()))
+                .map(type -> Category.builder()
                         .categoryName(type.getCategoryName())
-                        .build());
-            }
-        }
+                        .build())
+                .collect(Collectors.toList());
 
-        if (!categories.isEmpty()){
-            categoryRepository.saveAll(categories);
+        // 저장할 카테고리가 있는 경우만 저장
+        if (!categoriesToSave.isEmpty()) {
+            categoryRepository.saveAll(categoriesToSave);
         }
     }
 }
