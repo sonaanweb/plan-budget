@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Tag(name="예산 API", description = "예산을 등록하고 등록된 예산 리스트를 조회하는 API")
 @Slf4j
 @RestController
@@ -34,8 +32,8 @@ public class BudgetController {
             @RequestBody @Valid BudgetCreateReqDto budgetCreateReqDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        Member member = principalDetails.getMember();
-        log.info("예산 생성 memberId: {}", member.getId());
+        Member member = principalDetails.getMember();  // memberId만 사용
+        log.info("예산 생성 memberId: {}", member);
 
         BudgetCreateResDto budgetCreateResDto = budgetService.createBudget(budgetCreateReqDto, member);
         return ResponseEntity.ok(budgetCreateResDto);
@@ -63,7 +61,7 @@ public class BudgetController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         Member member = principalDetails.getMember();
-        log.info("예산 조회 요청 memberId: {}, year: {}, month: {}", member.getId(), year, month);
+        log.info("예산 조회 요청 memberId: {}, year: {}, month: {}", member, year, month);
 
         BudgetFilterReqDto filterReqDto = new BudgetFilterReqDto(year, month);
         BudgetResDto budgetResponse = budgetService.getBudgetsByMemberAndDate(member, filterReqDto);

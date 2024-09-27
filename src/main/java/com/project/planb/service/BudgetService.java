@@ -32,8 +32,8 @@ public class BudgetService {
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
         // 중복 예외 처리: 같은 년도, 같은 달, 같은 카테고리 중복 체크
-        if (budgetRepository.existsByMemberAndCategoryIdAndYearAndMonth(
-                member,
+        if (budgetRepository.existsByMemberIdAndCategoryIdAndYearAndMonth(
+                member.getId(),
                 category.getId(),
                 budgetCreateReqDto.year(),
                 budgetCreateReqDto.month()
@@ -79,7 +79,7 @@ public class BudgetService {
         int year = (budgetFilterReqDto.year() != 0) ? budgetFilterReqDto.year() : LocalDate.now().getYear();
         int month = (budgetFilterReqDto.month() != 0) ? budgetFilterReqDto.month() : LocalDate.now().getMonthValue();
 
-        List<Budget> budgets = budgetRepository.findByMemberAndYearAndMonth(member, year, month);
+        List<Budget> budgets = budgetRepository.findByMemberIdAndYearAndMonth(member.getId(), year, month);
 
         // 총 예산 계산
         int totalAmount = budgets.stream()
