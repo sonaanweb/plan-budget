@@ -15,10 +15,10 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     List<Budget> findByMember(Member member);
 
     // 예산 생성 조회 년 월
-    List<Budget> findByMemberAndYearAndMonth(Member member, Integer year, Integer month);
+    List<Budget> findByMemberIdAndYearAndMonth(Long memberId, Integer year, Integer month);
 
     // 예산 년/월 중복 카테고리 생성 불가
-    boolean existsByMemberAndCategoryIdAndYearAndMonth(Member member, Long categoryId, int year, int month);
+    boolean existsByMemberIdAndCategoryIdAndYearAndMonth(Long memberId, Long categoryId, int year, int month);
 
     // 특정 카테고리와 특정 연도/월에 대한 예산 조회 > 예산 조회는 이거 하나이므로 따로 queryDsl 파일 X
     @Query("SELECT b FROM Budget b WHERE b.member.id = :memberId AND b.category.id = :categoryId AND b.year = :year AND b.month = :month")
