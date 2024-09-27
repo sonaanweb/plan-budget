@@ -1,6 +1,6 @@
 package com.project.planb.service;
 
-import com.project.planb.dto.res.StaticsDto;
+import com.project.planb.dto.res.StatisticsDto;
 import com.project.planb.entity.Category;
 import com.project.planb.entity.Member;
 import com.project.planb.repository.CategoryRepository;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-public class StaticsService {
+public class StatisticsService {
 
     private final CategoryRepository categoryRepository;
     private final SpendRepository spendRepository;
@@ -25,7 +25,7 @@ public class StaticsService {
      */
 
     // Monthly
-    public StaticsDto compareWithLastMonth(Member member) {
+    public StatisticsDto compareWithLastMonth(Member member) {
 
         // 이번 달 오늘까지 사용한 지출액
         LocalDate today = LocalDate.now();
@@ -47,7 +47,7 @@ public class StaticsService {
      */
 
     // Weekly
-    public StaticsDto compareWithLastWeek(Member member) {
+    public StatisticsDto compareWithLastWeek(Member member) {
 
         // 오늘 사용한 지출액
         LocalDate today = LocalDate.now();
@@ -63,10 +63,10 @@ public class StaticsService {
     }
 
     // 카테고리별 통계 정보를 가져오는 메서드
-    private StaticsDto getStatisticsDto(Map<Category, Integer> current, Map<Category, Integer> last) {
+    private StatisticsDto getStatisticsDto(Map<Category, Integer> current, Map<Category, Integer> last) {
         int lastTotalSpend = 0;
         int currentTotalSpend = 0;
-        List<StaticsDto.CategoryResDto> categoryResDto = new ArrayList<>();
+        List<StatisticsDto.CategoryResDto> categoryResDto = new ArrayList<>();
 
         for (Category category : categoryRepository.findAll()) {
             int currentSpend = current.getOrDefault(category, 0);
@@ -75,7 +75,7 @@ public class StaticsService {
             // 증가율 계산
             int increaseRate = calculateIncreaseRate(lastSpend, currentSpend);
 
-            categoryResDto.add(new StaticsDto.CategoryResDto(
+            categoryResDto.add(new StatisticsDto.CategoryResDto(
                     category.getCategoryName(),
                     lastSpend,
                     currentSpend,
@@ -89,7 +89,7 @@ public class StaticsService {
         // 전체 지출액 증가율 계산
         int totalIncreaseRate = calculateIncreaseRate(lastTotalSpend, currentTotalSpend);
 
-        return new StaticsDto(
+        return new StatisticsDto(
                 lastTotalSpend,
                 currentTotalSpend,
                 totalIncreaseRate,

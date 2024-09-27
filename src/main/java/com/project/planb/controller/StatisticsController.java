@@ -1,9 +1,9 @@
 package com.project.planb.controller;
 
-import com.project.planb.dto.res.StaticsDto;
+import com.project.planb.dto.res.StatisticsDto;
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
-import com.project.planb.service.StaticsService;
+import com.project.planb.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/statics")
 @RequiredArgsConstructor
-public class StaticsController {
+public class StatisticsController {
 
-    private final StaticsService staticsService;
+    private final StatisticsService statisticsService;
 
     /**
      * 지출 통계: 지난 달과 비교
      */
     @Operation(summary = "지난 달과 현재 지출 비교")
     @GetMapping("/monthly")
-    public ResponseEntity<StaticsDto> compareWithLastMonth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<StatisticsDto> compareWithLastMonth(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         Member member = principalDetails.getMember();
-        StaticsDto statistics = staticsService.compareWithLastMonth(member);
+        StatisticsDto statistics = statisticsService.compareWithLastMonth(member);
         return ResponseEntity.ok(statistics);
     }
 
@@ -40,9 +40,16 @@ public class StaticsController {
      */
     @Operation(summary = "지난 주와 현재 지출 비교")
     @GetMapping("/weekly")
-    public ResponseEntity<StaticsDto> compareWithLastWeek(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<StatisticsDto> compareWithLastWeek(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Member member = principalDetails.getMember();
-        StaticsDto statistics = staticsService.compareWithLastWeek(member);
+        StatisticsDto statistics = statisticsService.compareWithLastWeek(member);
         return ResponseEntity.ok(statistics);
     }
+
+    /**
+     * 현재 예산 사용량, 남은 예산 통계
+     */
+//    @Operation(summary = "월 예산 사용량")
+//    @GetMapping("/budgets")
+
 }
