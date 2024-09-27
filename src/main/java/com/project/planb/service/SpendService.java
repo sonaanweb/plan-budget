@@ -56,7 +56,6 @@ public class SpendService {
                 .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
 
         // memberId를 가져와 작성자 예외처리
-        // (!spend.getMember().equals(member))일 때는 제대로 구현되지 않았음
         if (!spend.getMember().getId().equals(member.getId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
         }
@@ -123,7 +122,7 @@ public class SpendService {
 
     // 지출 상세
     public SpendDetailDto getSpendDetail(Member member, Long spendId) {
-        Spend spend = spendRepository.findByIdAndMember(spendId, member)
+        Spend spend = spendRepository.findByIdAndMemberId(spendId, member)
                 .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
 
         if (!spend.getMember().getId().equals(member.getId())) {
