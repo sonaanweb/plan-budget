@@ -28,13 +28,13 @@ public class Budget {
     private Integer amount;
 
     @Column(name = "year", nullable = false)
-    private int year;
+    private Integer year;
 
     @Column(name = "month", nullable = false)
-    private int month;
+    private Integer month;
 
     @Builder
-    public Budget(Member member, Category category, Integer amount, int year, int month) {
+    public Budget(Member member, Category category, Integer amount, Integer year, Integer month) {
         this.member = member;
         this.category = category;
         this.amount = amount != null ? amount : 0;

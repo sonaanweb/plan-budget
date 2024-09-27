@@ -36,7 +36,8 @@ public enum ErrorCode {
     SPEND_NOT_FOUND(HttpStatus.NOT_FOUND, "지출 정보가 존재하지 않습니다."),
 
     /* Budget Exception */
-    BUDGET_NOT_FOUND(HttpStatus.NOT_FOUND, "예산 정보가 존재하지 않습니다.");
+    BUDGET_NOT_FOUND(HttpStatus.NOT_FOUND, "예산 정보가 존재하지 않습니다."),
+    BUDGET_ALREADY_EXISTS(HttpStatus.NOT_FOUND, "이번달 예산에 이미 등록된 카테고리입니다.");
 
 
     private final HttpStatus status;
