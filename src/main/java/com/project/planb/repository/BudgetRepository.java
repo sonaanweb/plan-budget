@@ -1,7 +1,6 @@
 package com.project.planb.repository;
 
 import com.project.planb.entity.Budget;
-import com.project.planb.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,9 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
-
-    // 예산 생성 조회 (전체)
-    List<Budget> findByMember(Member member);
 
     // 예산 생성 조회 년 월
     List<Budget> findByMemberIdAndYearAndMonth(Long memberId, Integer year, Integer month);

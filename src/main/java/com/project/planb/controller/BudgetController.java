@@ -39,19 +39,6 @@ public class BudgetController {
         return ResponseEntity.ok(budgetCreateResDto);
     }
 
-    /* 등록한 예산 리스트 조회
-    @Operation(summary = "사용자가 등록한 예산 리스트 조회")
-    @GetMapping
-    public ResponseEntity<List<BudgetResDto>> getBudgets(
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Member member = principalDetails.getMember();
-        log.info("예산 조회 memberId: {}", member.getId());
-
-        List<BudgetResDto> budgets = budgetService.getBudgetsByMember(member);
-        return ResponseEntity.ok(budgets);
-    }
-     */
-
     // 등록한 예산 리스트 조회 (년/월 필터링)
     @Operation(summary = "사용자가 등록한 예산 리스트 조회")
     @GetMapping
