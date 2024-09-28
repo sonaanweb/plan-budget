@@ -49,21 +49,29 @@ public class StatisticsService {
     }
 
     /**
-     * 지난 요일 대비 지출 통계 계산 -- TODO: N요일 기준 데이터만 보여주는 게 나을지 주간으로 계산할 지
+     * 지난 요일 대비 지출 통계 계산 -- N요일 -> 주간으로 변경
      */
 
     // Weekly
     public StatisticsDto compareWithLastWeek(Member member) {
 
-        // 오늘 사용한 지출액
+        // 오늘 날짜
         LocalDate today = LocalDate.now();
-        Map<Category, Integer> currentTotalSpendByCategory =
-                spendRepository.getTotalSpendByDateRangeGroupByCategory(member.getId(), today, today);
 
-        // 지난주 오늘 사용한 지출액
-        LocalDate lastToday = today.minusWeeks(1);
+        // 주간 시작일 = 월요일
+        LocalDate startOfCurrentWeek = today.with(java.time.DayOfWeek.MONDAY); // 이번주
+        LocalDate startOfLastWeek = startOfCurrentWeek.minusWeeks(1); // 지난주
+
+        // 이번 주 지출액 (시작일인 월요일부터 `오늘`)
+        Map<Category, Integer> currentTotalSpendByCategory =
+                spendRepository.getTotalSpendByDateRangeGroupByCategory(
+                        member.getId(), startOfCurrentWeek, today);
+
+        // 지난 주 지출액 (월 ~ 일)
+        // plusDays (월요일부터 1일이므로 plusDays +6 == 일요일)
         Map<Category, Integer> lastTotalSpendByCategory =
-                spendRepository.getTotalSpendByDateRangeGroupByCategory(member.getId(), lastToday, lastToday);
+                spendRepository.getTotalSpendByDateRangeGroupByCategory(
+                        member.getId(), startOfLastWeek, startOfLastWeek.plusDays(6));
 
         return getStatisticsDto(currentTotalSpendByCategory, lastTotalSpendByCategory);
     }
