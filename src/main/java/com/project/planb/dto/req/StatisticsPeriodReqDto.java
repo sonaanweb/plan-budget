@@ -2,7 +2,7 @@ package com.project.planb.dto.req;
 
 import org.hibernate.validator.constraints.Range;
 
-public record StaticsPeriodReqDto(
+public record StatisticsPeriodReqDto(
         /**
          * 기간 별 (월 단위) 사용량 통계 요청 DTO (년 / 월)
          */
