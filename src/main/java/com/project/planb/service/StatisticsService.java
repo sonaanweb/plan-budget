@@ -1,12 +1,17 @@
 package com.project.planb.service;
 
+import com.project.planb.dto.req.StatisticsPeriodReqDto;
+import com.project.planb.dto.res.BudgetStatisticsDto;
 import com.project.planb.dto.res.StatisticsDto;
+import com.project.planb.entity.Budget;
 import com.project.planb.entity.Category;
 import com.project.planb.entity.Member;
+import com.project.planb.repository.BudgetRepository;
 import com.project.planb.repository.CategoryRepository;
 import com.project.planb.repository.SpendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +24,7 @@ public class StatisticsService {
 
     private final CategoryRepository categoryRepository;
     private final SpendRepository spendRepository;
+    private final BudgetRepository budgetRepository;
 
     /**
      * 지난 달 대비 지출 통계 계산
@@ -100,5 +106,61 @@ public class StatisticsService {
     private int calculateIncreaseRate(int lastValue, int currentValue) {
         if (lastValue == 0) return 0; // 이전 값이 0일 때는 0 반환할 것
         return (int) (((double) (currentValue - lastValue) / lastValue) * 100); // 증가율 계산
+    }
+
+
+    /**
+     * 특정 연도와 월의 예산 사용량 통계 조회
+     */
+    @Transactional(readOnly = true)
+    public BudgetStatisticsDto getMonthlyStatistics(Member member, StatisticsPeriodReqDto reqDto) {
+
+        // 현재 날짜 가져오기 ( 기본 조회 )
+        LocalDate now = LocalDate.now();
+
+        int year = (reqDto.year() != null) ? reqDto.year() : now.getYear();
+        int month = (reqDto.month() != null) ? reqDto.month() : now.getMonthValue();
+
+        // 1. 해당 월의 시작일과 종료일 계산
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        // 2. 해당 월의 전체 예산 정보 조회
+        List<Budget> monthlyBudgets = budgetRepository.findByMemberAndDateRange(member.getId(), year, month);
+
+        // 3. 해당 월의 카테고리별 지출 조회
+        Map<Category, Integer> totalSpendByCategory = spendRepository.getTotalSpendByDateRangeGroupByCategory(
+                member.getId(), startDate, endDate);
+
+        // 4. 전체 예산 합계와 남은 예산 계산
+        int totalBudget = monthlyBudgets.stream().mapToInt(Budget::getAmount).sum();
+        int totalSpent = totalSpendByCategory.values().stream().mapToInt(Integer::intValue).sum();
+        int remainingBudget = totalBudget - totalSpent;
+
+        // 5. 사용 비율 계산
+        double usagePercentage = (totalBudget == 0) ? 0.0 : ((double) totalSpent / totalBudget) * 100;
+
+        // 6. 각 카테고리별 사용량 및 사용 비율 계산
+        List<BudgetStatisticsDto.CategoryUsageRes> categoryUsages = monthlyBudgets.stream()
+                .map(budget -> {
+                    int spentAmount = totalSpendByCategory.getOrDefault(budget.getCategory(), 0);
+                    double categoryUsagePercentage = (budget.getAmount() == 0) ? 0.0 :
+                            ((double) spentAmount / budget.getAmount()) * 100;
+
+                    // 소수점 반올림
+                    double roundedUsagePercentage = Math.round(categoryUsagePercentage * 100.0) / 100.0;
+
+                    return new BudgetStatisticsDto.CategoryUsageRes(
+                            budget.getCategory().getCategoryName(),
+                            spentAmount,
+                            budget.getAmount(),
+                            roundedUsagePercentage
+                    );
+                }).toList();
+
+        // 비율 반올림
+        double roundedTotalUsagePercentage = Math.round(usagePercentage * 100.0) / 100.0;
+
+        return new BudgetStatisticsDto(totalBudget, remainingBudget, roundedTotalUsagePercentage, categoryUsages);
     }
 }

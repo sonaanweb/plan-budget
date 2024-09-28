@@ -28,4 +28,12 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
             @Param("year") Integer year,
             @Param("month") Integer month
     );
+
+    // 특정 연도와 월의 예산 조회 (월 사용량, 예산 대비 지출 통계)
+    @Query("SELECT b FROM Budget b WHERE b.member.id = :memberId AND b.year = :year AND b.month = :month")
+    List<Budget> findByMemberAndDateRange(
+            @Param("memberId") Long memberId,
+            @Param("year") Integer year,
+            @Param("month") Integer month
+    );
 }

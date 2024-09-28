@@ -1,5 +1,7 @@
 package com.project.planb.controller;
 
+import com.project.planb.dto.req.StatisticsPeriodReqDto;
+import com.project.planb.dto.res.BudgetStatisticsDto;
 import com.project.planb.dto.res.StatisticsDto;
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -49,7 +52,18 @@ public class StatisticsController {
     /**
      * 현재 예산 사용량, 남은 예산 통계
      */
-//    @Operation(summary = "월 예산 사용량")
-//    @GetMapping("/budgets")
+    @Operation(summary = "월 예산 사용량 및 남은 예산 통계 조회")
+    @GetMapping("/budgets")
+    public ResponseEntity<BudgetStatisticsDto> getMonthlyBudgetStatistics(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(value = "year", required = false) Integer year,
+            @RequestParam(value = "month", required = false) Integer month) {
 
+        Member member = principalDetails.getMember();
+        // StatisticsPeriodReqDto 객체 생성
+        StatisticsPeriodReqDto reqDto = new StatisticsPeriodReqDto(year, month);
+
+        BudgetStatisticsDto budgetStatistics = statisticsService.getMonthlyStatistics(member, reqDto);
+        return ResponseEntity.ok(budgetStatistics);
+    }
 }
