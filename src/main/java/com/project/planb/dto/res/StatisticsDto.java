@@ -2,7 +2,7 @@ package com.project.planb.dto.res;
 
 import java.util.List;
 
-public record StaticsDto(
+public record StatisticsDto(
         // 통계용 DTO weekly, monthly
         // weekly, monthly
         int lastAmount, // todo: Integer & int 값타입 통일 및 정리

@@ -1,7 +1,7 @@
 package com.project.planb.service;
 
 import com.project.planb.dto.req.BudgetCreateReqDto;
-import com.project.planb.dto.req.BudgetFilterReqDto;
+import com.project.planb.dto.req.BudgetPeriodReqDto;
 import com.project.planb.dto.res.BudgetCreateResDto;
 import com.project.planb.dto.res.BudgetResDto;
 import com.project.planb.entity.Budget;
@@ -75,9 +75,9 @@ public class BudgetService {
     } */
 
     // 년 월 예산 조회
-    public BudgetResDto getBudgetsByMemberAndDate(Member member, BudgetFilterReqDto budgetFilterReqDto) {
-        int year = (budgetFilterReqDto.year() != 0) ? budgetFilterReqDto.year() : LocalDate.now().getYear();
-        int month = (budgetFilterReqDto.month() != 0) ? budgetFilterReqDto.month() : LocalDate.now().getMonthValue();
+    public BudgetResDto getBudgetsByMemberAndDate(Member member, BudgetPeriodReqDto budgetPeriodReqDto) {
+        int year = (budgetPeriodReqDto.year() != 0) ? budgetPeriodReqDto.year() : LocalDate.now().getYear();
+        int month = (budgetPeriodReqDto.month() != 0) ? budgetPeriodReqDto.month() : LocalDate.now().getMonthValue();
 
         List<Budget> budgets = budgetRepository.findByMemberIdAndYearAndMonth(member.getId(), year, month);
 

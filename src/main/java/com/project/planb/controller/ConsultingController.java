@@ -23,9 +23,9 @@ public class ConsultingController {
 
     private final ConsultingService consultingService;
 
-    /*
-    오늘의 지출 안내
-    */
+    /**
+     * 오늘의 지출 안내
+     */
     @Operation(summary = "오늘의 지출을 안내하고 등록한 예산과의 분석 및 위험도 체크")
     @GetMapping
     public ResponseEntity<TodaySpendDto> getTodaySpend(@AuthenticationPrincipal PrincipalDetails principalDetails) {

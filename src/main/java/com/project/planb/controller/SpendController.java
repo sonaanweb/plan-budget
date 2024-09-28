@@ -42,8 +42,6 @@ public class SpendController {
 
         SpendReqDto createdSpend = spendService.createSpend(spendReqDto, member);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSpend);
-
-        /* todo : 201, 응답 dto 따로 생성 안 하고 확인 확인 할 정보는 log로 찍어보기, 차이점 정리할 것 */
     }
 
     /*

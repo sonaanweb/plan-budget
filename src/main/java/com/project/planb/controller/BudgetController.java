@@ -1,7 +1,7 @@
 package com.project.planb.controller;
 
 import com.project.planb.dto.req.BudgetCreateReqDto;
-import com.project.planb.dto.req.BudgetFilterReqDto;
+import com.project.planb.dto.req.BudgetPeriodReqDto;
 import com.project.planb.dto.res.BudgetCreateResDto;
 import com.project.planb.dto.res.BudgetResDto;
 import com.project.planb.entity.Member;
@@ -39,19 +39,6 @@ public class BudgetController {
         return ResponseEntity.ok(budgetCreateResDto);
     }
 
-    /* 등록한 예산 리스트 조회
-    @Operation(summary = "사용자가 등록한 예산 리스트 조회")
-    @GetMapping
-    public ResponseEntity<List<BudgetResDto>> getBudgets(
-            @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Member member = principalDetails.getMember();
-        log.info("예산 조회 memberId: {}", member.getId());
-
-        List<BudgetResDto> budgets = budgetService.getBudgetsByMember(member);
-        return ResponseEntity.ok(budgets);
-    }
-     */
-
     // 등록한 예산 리스트 조회 (년/월 필터링)
     @Operation(summary = "사용자가 등록한 예산 리스트 조회")
     @GetMapping
@@ -63,7 +50,7 @@ public class BudgetController {
         Member member = principalDetails.getMember();
         log.info("예산 조회 요청 memberId: {}, year: {}, month: {}", member, year, month);
 
-        BudgetFilterReqDto filterReqDto = new BudgetFilterReqDto(year, month);
+        BudgetPeriodReqDto filterReqDto = new BudgetPeriodReqDto(year, month);
         BudgetResDto budgetResponse = budgetService.getBudgetsByMemberAndDate(member, filterReqDto);
         return ResponseEntity.ok(budgetResponse);
     }

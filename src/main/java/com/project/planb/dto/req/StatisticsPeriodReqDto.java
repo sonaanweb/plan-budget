@@ -2,10 +2,9 @@ package com.project.planb.dto.req;
 
 import org.hibernate.validator.constraints.Range;
 
-public record BudgetFilterReqDto(
-
+public record StatisticsPeriodReqDto(
         /**
-         * 년 - 월로 설정 예산 조회
+         * 기간 별 (월 단위) 사용량 통계 요청 DTO (년 / 월)
          */
         Integer year,
 
