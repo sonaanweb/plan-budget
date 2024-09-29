@@ -6,7 +6,7 @@ import com.project.planb.dto.res.TokenResDto;
 import com.project.planb.entity.Member;
 import com.project.planb.exception.CustomException;
 import com.project.planb.exception.ErrorCode;
-import com.project.planb.jwt.JwtTokenProvider;
+import com.project.planb.security.jwt.JwtTokenProvider;
 import com.project.planb.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

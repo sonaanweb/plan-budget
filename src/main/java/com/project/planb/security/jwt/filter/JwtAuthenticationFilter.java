@@ -1,4 +1,4 @@
-package com.project.planb.jwt.filter;
+package com.project.planb.security.jwt.filter;
 
 import com.project.planb.entity.Member;
 import com.project.planb.security.PrincipalDetails;
