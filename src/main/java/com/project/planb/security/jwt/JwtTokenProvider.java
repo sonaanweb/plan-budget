@@ -1,8 +1,7 @@
-package com.project.planb.jwt;
+package com.project.planb.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,31 +38,33 @@ public class JwtTokenProvider {
     private String createToken(String account, long expirationTime) {
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(account)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .claims(claims)
+                .subject(account)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey)
                 .compact();
     }
 
     // 토큰에서 계정 정보 추출
     public String getAccountFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey)
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
+    }
+
+    // 토큰의 모든 Claims 추출
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject();
     }
 
     // 토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
+            extractAllClaims(token);
             return true; // 유효한 토큰
         } catch (Exception e) {
             log.error("토큰 유효성 검사 실패: {}", e.getMessage());

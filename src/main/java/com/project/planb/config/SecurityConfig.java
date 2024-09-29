@@ -1,6 +1,6 @@
 package com.project.planb.config;
 
-import com.project.planb.jwt.filter.JwtAuthenticationFilter;
+import com.project.planb.security.jwt.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
