@@ -1,8 +1,9 @@
 package com.project.planb.service;
 
-import com.project.planb.dto.res.CategoryResDto;
-import com.project.planb.entity.Category;
-import com.project.planb.repository.CategoryRepository;
+import com.project.planb.domain.category.service.CategoryService;
+import com.project.planb.domain.category.dto.CategoryResDto;
+import com.project.planb.domain.category.entity.Category;
+import com.project.planb.domain.category.repository.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

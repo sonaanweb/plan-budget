@@ -1,14 +1,15 @@
 package com.project.planb.service;
 
-import com.project.planb.dto.req.StatisticsPeriodReqDto;
-import com.project.planb.dto.res.BudgetStatisticsDto;
-import com.project.planb.dto.res.StatisticsDto;
-import com.project.planb.entity.Budget;
-import com.project.planb.entity.Category;
-import com.project.planb.entity.Member;
-import com.project.planb.repository.BudgetRepository;
-import com.project.planb.repository.CategoryRepository;
-import com.project.planb.repository.SpendRepository;
+import com.project.planb.feature.dto.req.StatisticsPeriodReqDto;
+import com.project.planb.feature.dto.res.BudgetStatisticsDto;
+import com.project.planb.feature.dto.res.StatisticsDto;
+import com.project.planb.domain.budget.entity.Budget;
+import com.project.planb.domain.category.entity.Category;
+import com.project.planb.domain.member.entity.Member;
+import com.project.planb.feature.service.StatisticsService;
+import com.project.planb.domain.budget.repository.BudgetRepository;
+import com.project.planb.domain.category.repository.CategoryRepository;
+import com.project.planb.domain.spend.repository.SpendRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
