@@ -1,13 +1,14 @@
 package com.project.planb.service;
 
-import com.project.planb.dto.req.BudgetCreateReqDto;
-import com.project.planb.dto.res.BudgetCreateResDto;
-import com.project.planb.entity.Category;
-import com.project.planb.entity.Member;
-import com.project.planb.exception.CustomException;
-import com.project.planb.exception.ErrorCode;
-import com.project.planb.repository.BudgetRepository;
-import com.project.planb.repository.CategoryRepository;
+import com.project.planb.domain.budget.service.BudgetService;
+import com.project.planb.domain.budget.dto.req.BudgetCreateReqDto;
+import com.project.planb.domain.budget.dto.res.BudgetCreateResDto;
+import com.project.planb.domain.category.entity.Category;
+import com.project.planb.domain.member.entity.Member;
+import com.project.planb.common.exception.CustomException;
+import com.project.planb.common.exception.ErrorCode;
+import com.project.planb.domain.budget.repository.BudgetRepository;
+import com.project.planb.domain.category.repository.CategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
