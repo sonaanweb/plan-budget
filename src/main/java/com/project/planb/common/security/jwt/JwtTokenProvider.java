@@ -1,49 +1,87 @@
 package com.project.planb.common.security.jwt;
 
+import com.project.planb.common.security.details.PrincipalDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final SecretKey secretKey;
+    /**
+     * JWT 기반의 인증 및 권한 부여 : 토큰 생성 / 반환 / 유효성 검증 / 사용자 정보 추출 등
+     */
 
-    public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secret) {
-        // secretKey 생성
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+    // 파싱 암호키
+    private SecretKey key;
+
+    @Value("${security.jwt.secret-key}")
+    private String secretKey;
+
+    @Value("${security.jwt.access-token-TTL}")
+    private long accessTokenValidTime;
+
+    @Value("${security.jwt.refresh-token-TTL}")
+    private long refreshTokenValidTime;
+
+    @Value("${security.jwt.prefix}")
+    private String bearerPrefix;
+
+    private final PrincipalDetailsService principalDetailsService;
+
+    // 객체 생성 후 초기화 알고리즘 BASE64
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 토큰 유효 시간
-    private final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 30; // 30분
-    private final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24시간
-
+    // accessToken 생성 메서드
     public String createAccessToken(String account) {
-        return createToken(account, ACCESS_TOKEN_EXPIRATION_TIME);
+        return createToken(account, accessTokenValidTime); // 토큰 생성시 2번째 매개변수 활용(ttl)
     }
 
+    // refreshToken 생성 메서드
     public String createRefreshToken(String account) {
-        return createToken(account, REFRESH_TOKEN_EXPIRATION_TIME);
+        return createToken(account, refreshTokenValidTime);
     }
 
-    private String createToken(String account, long expirationTime) {
+    /**
+     * 토큰 생성 access, refresh
+     */
+    private String createToken(String account, long expirationTime) { // 위에서 각각 받아온 ttl - expirationTime
         Map<String, Object> claims = new HashMap<>();
-        return Jwts.builder()
+        // 현재 시각과 만료 시각 계산
+        Instant now = Instant.now();
+        Instant expiration = now.plusSeconds(expirationTime);
+
+        String token = Jwts.builder()
                 .claims(claims)
                 .subject(account)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(secretKey)
+                .issuedAt(Date.from(now)) // 현재 시각
+                .expiration(Date.from(expiration)) // 만료 시각
+                .signWith(key)
                 .compact();
+
+        log.info("토큰 생성 시각: {}", new Date());
+        log.info("생성된 토큰: {}, 만료 시간: {}", token, Date.from(expiration));
+
+        return token;
     }
 
     // 토큰에서 계정 정보 추출
@@ -55,10 +93,19 @@ public class JwtTokenProvider {
     // 토큰의 모든 Claims 추출
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(secretKey)
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    // Header에서 토큰 가져오는 메서드
+    public String getTokenFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith(bearerPrefix)) {
+            return bearerToken.substring(bearerPrefix.length()).trim(); // "Bearer " 부분 제거
+        }
+        return null;
     }
 
     // 토큰 유효성 검사

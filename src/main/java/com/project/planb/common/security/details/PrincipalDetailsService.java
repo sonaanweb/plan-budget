@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PrincipalDetailsService implements UserDetailsService {
 
     // Security에서 사용할 PrincipalDetails를 반환하는 서비스 - 'account'로 유효성 검사
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
@@ -25,5 +25,4 @@ public class PrincipalDetailsService implements UserDetailsService {
                 });
         return new PrincipalDetails(member);
     }
-
 }
