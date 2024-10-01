@@ -30,5 +30,9 @@ spring:
 
 security:
   jwt:
-    token:
-      secret-key: ${JWT_SECRET_KEY}
+    prefix: 'Bearer '
+    access-token-header: Authorization
+    refresh-token-header: AuthorizationRefresh
+    secret-key: ${JWT_SECRET_KEY}
+    access-token-TTL: 1800 # 30분
+    refresh-token-TTL: 259200
