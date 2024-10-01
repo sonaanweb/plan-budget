@@ -1,6 +1,6 @@
 package com.project.planb.common.security.jwt.filter;
 
-import com.project.planb.common.security.PrincipalDetails;
+import com.project.planb.common.security.details.PrincipalDetails;
 import com.project.planb.domain.member.entity.Member;
 import com.project.planb.domain.member.service.MemberService;
 import jakarta.servlet.FilterChain;

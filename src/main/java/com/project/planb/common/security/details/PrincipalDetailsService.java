@@ -1,4 +1,4 @@
-package com.project.planb.common.security;
+package com.project.planb.common.security.details;
 
 import com.project.planb.domain.member.entity.Member;
 import com.project.planb.common.exception.CustomException;
