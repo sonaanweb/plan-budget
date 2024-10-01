@@ -22,6 +22,12 @@ spring:
         show_sql: true
         format_sql: true
 
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 security:
   jwt:
     token:
