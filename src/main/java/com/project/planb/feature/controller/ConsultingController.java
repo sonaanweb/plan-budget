@@ -2,7 +2,7 @@ package com.project.planb.feature.controller;
 
 import com.project.planb.domain.spend.dto.res.TodaySpendDto;
 import com.project.planb.domain.member.entity.Member;
-import com.project.planb.common.security.PrincipalDetails;
+import com.project.planb.common.security.details.PrincipalDetails;
 import com.project.planb.feature.service.ConsultingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

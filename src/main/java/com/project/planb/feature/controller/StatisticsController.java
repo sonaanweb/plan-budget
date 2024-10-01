@@ -4,7 +4,7 @@ import com.project.planb.feature.dto.req.StatisticsPeriodReqDto;
 import com.project.planb.feature.dto.res.BudgetStatisticsDto;
 import com.project.planb.feature.dto.res.StatisticsDto;
 import com.project.planb.domain.member.entity.Member;
-import com.project.planb.common.security.PrincipalDetails;
+import com.project.planb.common.security.details.PrincipalDetails;
 import com.project.planb.feature.service.StatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

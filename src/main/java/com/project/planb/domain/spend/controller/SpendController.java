@@ -6,7 +6,7 @@ import com.project.planb.domain.spend.dto.res.SpendResDto;
 import com.project.planb.domain.member.entity.Member;
 import com.project.planb.common.exception.CustomException;
 import com.project.planb.common.exception.ErrorCode;
-import com.project.planb.common.security.PrincipalDetails;
+import com.project.planb.common.security.details.PrincipalDetails;
 import com.project.planb.domain.spend.service.SpendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

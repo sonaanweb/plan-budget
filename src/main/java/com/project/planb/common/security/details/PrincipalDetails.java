@@ -1,4 +1,4 @@
-package com.project.planb.common.security;
+package com.project.planb.common.security.details;
 
 import com.project.planb.domain.member.entity.Member;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class PrincipalDetails implements UserDetails {
 
     private final Member member;
 
-    // 권한 정보가 현재 없으므로 빈 컬렉션 반환
+    // 권한 정보는 따로 없으므로 빈 컬렉션 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();

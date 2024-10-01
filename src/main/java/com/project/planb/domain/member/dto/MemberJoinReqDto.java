@@ -1,4 +1,4 @@
-package com.project.planb.domain.member.dto.req;
+package com.project.planb.domain.member.dto;
 
 public record MemberJoinReqDto(
         String account,

@@ -5,7 +5,7 @@ import com.project.planb.domain.budget.dto.req.BudgetPeriodReqDto;
 import com.project.planb.domain.budget.dto.res.BudgetCreateResDto;
 import com.project.planb.domain.budget.dto.res.BudgetResDto;
 import com.project.planb.domain.member.entity.Member;
-import com.project.planb.common.security.PrincipalDetails;
+import com.project.planb.common.security.details.PrincipalDetails;
 import com.project.planb.domain.budget.service.BudgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

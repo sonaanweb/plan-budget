@@ -18,6 +18,7 @@ public enum ErrorCode {
     // 409 error
     DUPLICATED_ACCOUNT(HttpStatus.CONFLICT, "이미 사용중인 계정입니다."),
     // 404 error
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저를 찾을 수 없습니다."),
     // 401 error
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED,"권한이 없습니다."),

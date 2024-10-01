@@ -32,7 +32,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",            // Swagger UI 페이지
                                 "/swagger-ui.html",          // Swagger UI HTML 페이지
                                 "/api/members/login",        // 로그인
-                                "/api/members/join"          // 회원가입
+                                "/api/members/join",          // 회원가입
+                                "/api/members/reissue"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터
