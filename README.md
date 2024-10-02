@@ -121,8 +121,8 @@
 | **Spends API**   | GET         | `/api/spends`            | 지출 리스트 조회  |
 | **Spends API**   | GET         | `/api/spends/{spendId}`  | 지출 상세 조회   |
 | **Spends API**   | GET         | `/api/spends/today`       | 오늘의 지출 상황 안내  |
-| **Statistics API** | GET       | `/api/Statistics/weekly`  | 주간 지출 비교  |
-| **Statistics API** | GET       | `/api/Statistics/monthly`  | 월간 지출 비교 |
+| **Statistics API** | GET       | `/api/Statistics/weekly`  | 주간 지출 비교 통계 |
+| **Statistics API** | GET       | `/api/Statistics/monthly`  | 월간 지출 비교 통계 |
 | **Statistics API** | GET       | `/api/Statistics/budgets`  | 월간 사용량 통계 |
 
 <details>
@@ -330,8 +330,8 @@
 </details>
 
 
-### 3-1. API REFERENCE 📃
-#### Members
+### 📃3-1. API REFERENCE
+#### Members 👤
 <details>
   <summary>회원가입</summary>
   <br>
@@ -424,7 +424,7 @@ refreshToken은 유지, accessToken은 재발급
 ```  
 </details>
 
-#### Category
+#### Category 📂
 <details>
   <summary>카테고리 목록 조회</summary>
   <br>
@@ -449,7 +449,7 @@ refreshToken은 유지, accessToken은 재발급
 ```
 </details>
 
-#### Budgets
+#### Budgets 💰
 
 <details>
   <summary>예산 생성</summary>
@@ -541,7 +541,7 @@ refreshToken은 유지, accessToken은 재발급
 ```
 </details>
 
-#### Spends
+#### Spends 💸
 
 <details>
   <summary>지출 생성</summary>
@@ -696,7 +696,6 @@ refreshToken은 유지, accessToken은 재발급
   <summary>지출 상세 조회</summary>
   <br>
   사용자는 지출 상세 조회가 가능합니다
-  <br><br>
 
 #### Response
 `GET /api/spends/21`
@@ -755,38 +754,154 @@ refreshToken은 유지, accessToken은 재발급
 ```
 </details>
 
-#### Statistics ... 작성중
+#### Statistics 📊
 
 <details>
-  <summary>카테고리 목록</summary>
+  <summary>월간 예산 통계</summary>
   <br>
-  설명
+  사용자는 월간 예산 지출 사용량 통계를 확인할 수 있습니다.<br>
+  조회 할 년/월을 입력하지 않을 시 현재 년/월이 조회됩니다. <br><br>
+
+| Query Params Field  | Type      | Description     |
+|:---------------|:----------|:----------------|
+| `year`   | `Integer`  | 조회 할 년도  |
+| `month`     | `Integer`  | 조회 할 월 |
   
-#### Request
-`POST /api/members/join`
+#### Response
+`GET /api/statistics/budgets?year=2024&month=8`
 ```json
 {
-  
+    "totalBudget": 1160000, --- `8월`에 설정한 예산
+    "remainingBudget": 698000, --- 남은 예산
+    "usagePercentage": 39.83, --- 예산 사용 비율
+    "categoryUsages": [ --- 카테고리 별 계
+        {
+            "categoryName": "간식",
+            "spentAmount": 5000,
+            "budgetAmount": 50000,
+            "usagePercentage": 10.0
+        },
+        {
+            "categoryName": "주거비",
+            "spentAmount": 300000,
+            "budgetAmount": 600000,
+            "usagePercentage": 50.0
+        },
+        {
+            "categoryName": "교육/학습",
+            "spentAmount": 20000,
+            "budgetAmount": 200000,
+            "usagePercentage": 10.0
+        },
+        {
+            "categoryName": "쇼핑",
+            "spentAmount": 30000,
+            "budgetAmount": 100000,
+            "usagePercentage": 30.0
+        },
+        {
+            "categoryName": "의료/건강",
+            "spentAmount": 15000,
+            "budgetAmount": 70000,
+            "usagePercentage": 21.43
+        },
+        {
+            "categoryName": "취미/여가",
+            "spentAmount": 20000,
+            "budgetAmount": 60000,
+            "usagePercentage": 33.33
+        },
+        {
+            "categoryName": "공과금",
+            "spentAmount": 50000,
+            "budgetAmount": 50000,
+            "usagePercentage": 100.0
+        },
+        {
+            "categoryName": "기타",
+            "spentAmount": 0,
+            "budgetAmount": 30000,
+            "usagePercentage": 0.0
+        }
+    ]
 }
 ```
-| Field          | Type      | Description     |
-|:---------------|:----------|:----------------|
-| ``      | `string`  | (Required) 계정   |
-| ``     | `string`  | (Required) 비밀번호 |
+</details>
 
+<details>
+  <summary>주간 지출 통계</summary>
+  <br>
+  사용자는 `지난 주`와 `이번 주`의 비교 지출 통계를 확인할 수 있습니다.
+  지난주 총 사용금액, 이번주 총 사용금액, 증감 비율을 포함해 카테고리별 통계도 확인 가능합니다.
+  
 #### Response
-```text
-OK
+`GET /api/statistics/weekly
+```json
+{
+    "lastAmount": 62000, --- 지난 주 지출
+    "currentAmount": 67000, --- 이번 주 지출
+    "increaseRate": 8.0, --- 지난 주 지출에 비한 증가율
+    "categories": [ --- 카테고리 별
+        {
+            "categoryName": "간식",
+            "lastAmount": 0,
+            "currentAmount": 0,
+            "increaseRate": 0.0
+        },
+        {
+            "categoryName": "공과금",
+            "lastAmount": 40000, --- 지난 주 지출
+            "currentAmount": 60000, --- 이번 주 지출
+            "increaseRate": 50.0 --- 지난 주 지출에 비한 증가율
+        },
 ```
+</details>
 
-```text
-BAD
+<details>
+  <summary>월간 지출 통계</summary>
+  <br>
+  사용자는 주간 지출통계와 같이 `지난 달`과 `이번 달`의 비교 지출 통계를 확인할 수 있습니다.<br>
+  (* 이번 달 `오늘` + 지난 달 `오늘`까지의 통계)
+  
+#### Response
+`GET /api/statistics/monthly`
+```json
+{
+    "lastAmount": 26000, --- 지난 달 사용 금액
+    "currentAmount": 7000, --- 이번 달 사용 금액
+    "increaseRate": -73.0, --- 증감 비율
+    "categories": [ --- 카테고리 별
+        {
+            "categoryName": "교통비",
+            "lastAmount": 8000,
+            "currentAmount": 7000,
+            "increaseRate": -12.0
+        },
+        {
+            "categoryName": "식비",
+            "lastAmount": 18000,
+            "currentAmount": 0,
+            "increaseRate": -100.0
+        },...
 ```
 </details>
 
 ---
-### 4. 트러블 슈팅
-- 발생했던 문제와 해결 방법에 대한 설명
+### 4. 트러블 슈팅 ... 작성중
+<details>
+  <summary> int와 Integer</summary>
+</details>
+<details>
+  <summary> JWT 파싱 오류</summary>
+</details>
+<details>
+  <summary> 토큰 시간 에러</summary>
+</details>
 
 ### 5. 회고
-- 프로젝트 진행 후 느낀 점이나 배운 점
+<details>
+  <summary> 유용한 통계에 대한 고민</summary>
+</details>
+<details>
+  <summary> 기본 카테고리 구현 방식</summary>
+</details>
