@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "통계 API", description = "주간/월간 지출 통계 API")
 @RestController
-@RequestMapping("/api/statics")
+@RequestMapping("/api/statistics")
 @RequiredArgsConstructor
 public class StatisticsController {
 
