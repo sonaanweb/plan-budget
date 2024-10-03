@@ -334,10 +334,10 @@
 #### Members 👤
 <details>
   <summary>회원가입</summary>
-  <br>
+  
   아이디와 비밀번호를 입력한 회원가입
   
-#### Request
+<strong>Request</strong>
 
 | Field          | Type      | Description     |
 |:---------------|:----------|:----------------|
@@ -351,7 +351,7 @@
   "password": "1234",
 }
 ```
-#### Response
+<strong>Response</strong>
 ```text
 200 OK
 회원가입이 성공적으로 완료되었습니다.
@@ -364,11 +364,11 @@
 </details>
 <details>
   <summary>로그인</summary>
-  <br>
+
   아이디와 비밀번호를 입력해 로그인합니다.<br>
   로그인 성공 시 accessToken, refreshToken 동시 발급됩니다.
 
-#### Request
+<strong>Request</strong>
 
 | Field          | Type      | Description     |
 |:---------------|:----------|:----------------|
@@ -382,7 +382,7 @@
   "password": "1234",
 }
 ```
-#### Response
+<strong>Response</strong>
 ```text
 200 OK
 {
@@ -399,10 +399,10 @@
 
 <details>
   <summary>토큰 재발급</summary>
-  <br>
+
   유효한 refreshToken이 레디스 서버 내에 존재하면 accessToken을 재발급 받을 수 있습니다. 
   
-#### Request  
+<strong>Request</strong>  
 
 | Field | Type | Description |  
 |:---------------|:----------|:------------------------|  
@@ -414,7 +414,7 @@
 "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3YW50ZWQxIiwiaWF0IjoxNz...."  
 }  
 ```  
-#### Response  
+<strong>Response</strong>  
 refreshToken은 유지, accessToken은 재발급  
 ```json  
 {  
@@ -427,10 +427,10 @@ refreshToken은 유지, accessToken은 재발급
 #### Category 📂
 <details>
   <summary>카테고리 목록 조회</summary>
-  <br>
+
   사용자는 init data로 들어간 열가지의 기본 카테고리 목록을 조회할 수 있습니다.
   
-#### Response
+<strong>Response</strong>
 `GET /api/categories`
 ```json
 [
@@ -453,10 +453,10 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>예산 생성</summary>
-  <br>
+
   사용자는 유효한 카테고리 내에서 년/월별 예산 생성을 할 수 있습니다.
   
-#### Request
+<strong>Request</strong>
 
 | Field          | Type      | Description     |
 |:---------------|:----------|:----------------|
@@ -474,7 +474,7 @@ refreshToken은 유지, accessToken은 재발급
   "month": 11
 }
 ```
-#### Response
+<strong>Response</strong>
 ```json
 {
     "id": 34,
@@ -492,7 +492,7 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>예산 조회</summary>
-  <br>
+  
   사용자는 예산 총액과 카테고리별 예산을 조회할 수 있습니다.<br>
   Query Params 값이 없을 때는 현재 년, 월을 기준으로 조회됩니다. 
   <br><br>
@@ -502,7 +502,7 @@ refreshToken은 유지, accessToken은 재발급
 | `year`   | `Integer`  | 조회 할 년도  |
 | `month`     | `Integer`  | 조회 할 월 |
 
-#### Response
+<strong>Response</strong>
 `GET /api/budgets` ( 2024-10 Data.now )
 ```json
 {
@@ -545,11 +545,11 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>지출 생성</summary>
-  <br>
+
   사용자는 카테고리별 지출을 생성할 수 있습니다.<br>
   지출 생성 시 `지출 합계에 포함` 여부를 선택할 수 있습니다. (기본 값 false = 포함)
   
-#### Request
+<strong>Request</strong>
 
 | Field          | Type      | Description     |
 |:---------------|:----------|:----------------|
@@ -571,7 +571,7 @@ refreshToken은 유지, accessToken은 재발급
 }
 ```
 
-#### Response
+<strong>Response</strong>
 ```json
 {
     "categoryId": 2,
@@ -589,10 +589,10 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>지출 수정</summary>
-  <br>
+
   사용자는 등록한 지출 정보를 모두 수정할 수 있습니다.
   
-#### Request
+<strong>Request</strong>
 `PATCH /api/spends/{spendId}`
 ```json
 {
@@ -604,7 +604,7 @@ refreshToken은 유지, accessToken은 재발급
 }
 
 ```
-#### Response
+<strong>Response</strong>
 ```json
 200 OK
 ```
@@ -616,12 +616,12 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>지출 삭제</summary>
-  <br>
+
   사용자는 등록한 지출 정보를 삭제할 수 있습니다.
   
 `DELETE /api/spends/{spendId}`
 
-#### Response
+<strong>Response</strong>
 ```json
 204 No Content
 ```
@@ -632,7 +632,7 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>지출 목록 조회</summary>
-  <br>
+
   사용자는 등록한 지출 정보 동적 조회가 가능합니다.<br>
   필수적으로 ` 기간 `으로 조회하며 (`기간 미입력 시 현재 년/월의 1일부터 계산`), <br>
   조회된 내용의 모든 지출 합계와 카테고리별 지출 합계, 카테고리 별 지출 현황을 확인할 수 있습니다.<br>
@@ -646,7 +646,7 @@ refreshToken은 유지, accessToken은 재발급
 | `minAmount`     | `Integer`  | 최소 금액 |
 | `maxAmount`     | `Integer`  | 최대 금액 |
 
-#### Response
+<strong>Response</strong>
 `GET /api/spends?startDate=2024-08-01&endDate=2024-08-20`
 ```json
 {
@@ -694,10 +694,10 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>지출 상세 조회</summary>
-  <br>
+
   사용자는 지출 상세 조회가 가능합니다
 
-#### Response
+<strong>Response</strong>
 `GET /api/spends/21`
 ```json
 {
@@ -718,12 +718,12 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>오늘의 지출</summary>
-  <br>
+
   사용자는 오늘의 지출 내역을 알림으로 받을 수 있습니다. (Scheduled: 매일 오후 8시 실행) <br>
   오늘 사용한 총 지출액, 등록한 예산 범위 내 하루 추천 사용액, 총 위험도, 카테고리 별 추천 사용액과 위험도 등을 알려줍니다.
   <br>
   
-#### Response
+<strong>Response</strong>
 `GET /api/spends/today`
 
 ```json
@@ -758,7 +758,7 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>월간 예산 통계</summary>
-  <br>
+
   사용자는 월간 예산 지출 사용량 통계를 확인할 수 있습니다.<br>
   조회 할 년/월을 입력하지 않을 시 현재 년/월이 조회됩니다. <br><br>
 
@@ -767,7 +767,7 @@ refreshToken은 유지, accessToken은 재발급
 | `year`   | `Integer`  | 조회 할 년도  |
 | `month`     | `Integer`  | 조회 할 월 |
   
-#### Response
+<strong>Response</strong>
 `GET /api/statistics/budgets?year=2024&month=8`
 ```json
 {
@@ -830,11 +830,11 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>주간 지출 통계</summary>
-  <br>
+
   사용자는 `지난 주`와 `이번 주`의 비교 지출 통계를 확인할 수 있습니다.
   지난주 총 사용금액, 이번주 총 사용금액, 증감 비율을 포함해 카테고리별 통계도 확인 가능합니다.
   
-#### Response
+<strong>Response</strong>
 `GET /api/statistics/weekly
 ```json
 {
@@ -859,11 +859,11 @@ refreshToken은 유지, accessToken은 재발급
 
 <details>
   <summary>월간 지출 통계</summary>
-  <br>
+  
   사용자는 주간 지출통계와 같이 `지난 달`과 `이번 달`의 비교 지출 통계를 확인할 수 있습니다.<br>
   (* 이번 달 `오늘` + 지난 달 `오늘`까지의 통계)
   
-#### Response
+<strong>Response</strong>
 `GET /api/statistics/monthly`
 ```json
 {
@@ -887,21 +887,47 @@ refreshToken은 유지, accessToken은 재발급
 </details>
 
 ---
-### 4. 트러블 슈팅 ... 작성중
+### 4. 트러블 슈팅
 <details>
   <summary> int와 Integer</summary>
+  테스트 중 날짜 값에 ""와 같은 공백이 들어가는 걸 확인했습니다. <br>
+  현재 프로젝트에서는 날짜 포맷 클래스를 사용하지 않고 Year / Month를 따로 받아오고 있는데, <br> 데이터 타입에 대해 놓친 부분이 있어서 생긴 결점이었습니다.<br>
+  int는 기본타입으로 빈문자열을 0으로 치환하여 허용된 것이기 때문에 참조타입 Integer로 바꾸어주어 해결했습니다.(Notnull 검증)
 </details>
 <details>
-  <summary> JWT 파싱 오류</summary>
-</details>
-<details>
-  <summary> 토큰 시간 에러</summary>
+  <summary> 토큰 유효시간 에러</summary>
+  JWT 토큰 생성 시 만료 시간을 설정하는 부분에서 오류를 수정했습니다. <br>
+기존 코드에서는 expiration(new Date(System.currentTimeMillis() + expirationTime))를 사용하여 만료 시간을 설정했는데 이 부분이 `밀리초단위`로 계산되어 예상시간과 다른 걸 확인했습니다.<br>
+Instant 클래스를 사용하여 현재 시각을 가져온 뒤, expirationTime을 초 단위로 더하여 만료 시각을 계산하는 방법으로 수정하였습니다.
 </details>
 
 ### 5. 회고
+이번 개인 프로젝트를 진행하며 사용해보지 않았던 기술에 대한 두려움을 덜어낼 수 있었습니다.
+스프링 시큐리티나 QueryDsl과 같은 기술을 사용해보며 개인적으로 부족한 점도 많았고, 어려운 점 또한 많았지만 발전 가능성에 대해 한발자국 더 나아간 것 같습니다.
 <details>
-  <summary> 유용한 통계에 대한 고민</summary>
+  <summary> 사용자에게 유용할 통계는 무엇이 있을까?</summary>
+  🪄`N요일` 지출 비교 통계를 주간통계로 변경하였습니다.<br>
+  데이터가 없을 시 N요일만을 비교해서 통계내주는 것 보단 주간 통계로 변경하는 것이
+  유용성을 더 높일 수 있지 않을까하여 초기 요구사항에서 수정을 거쳤습니다.<br><br>
+  🪄월별 예산 지출 통계 API를 새로 추가하였습니다. <br>
+  실제 서비스되고 있는 애플리케이션들을 참고하여, 월별로 설정한 예산, 남은 예산, 사용 비율을 직관적으로 확인할 수 있도록 구현하였습니다.<br>
+  이러한 고민들을 거치며 사용자 친화적인 어플리케이션에 대해 더 깊게 생각해볼 수 있었습니다.
 </details>
 <details>
   <summary> 기본 카테고리 구현 방식</summary>
+  기본으로 고정된 카테고리를 추가하기 위해 초기화 데이터를 코드로 작성하는 방식을 선택했습니다. <br>
+  SQL 파일을 사용하는 방법도 있지만, 유연성 면에서 자바 코드가 더 적합하다고 판단했습니다. <br>
+  이전 프로젝트에서 파일 업로드 시 오류가 발생하면 프로젝트가 실행되지 않았던 경험이 있어, 이러한 문제를 피하기 위해 사용해보지 않았던 코드 구현방식으로 구현해보았습니다. <br><br>
+  또한 초기화 시 두 가지 방법을 비교하였습니다. <br>
+  첫 번째는 List를 사용하여 존재하지 않는 카테고리를 모아 saveAll로 저장하는 방식이고, <br>
+  두 번째는 Set을 활용하여 이미 존재하는 카테고리 이름을 데이터베이스에서 가져와 중복 확인을 최소화하는 방식입니다.<br>
+두 번째 방법을 선택한 이유는 List 방식은 각 카테고리의 존재 여부를 체크하기 위해 여러 번의 데이터베이스 호출이 발생하기 때문입니다.
+  <br>고정 카테고리가 10가지로 적은 데이터이므로 Set을 활용한 방식이 더 효율적이지 않을까 하는 판단이었습니다.
+</details>
+<details>
+  <summary> 날짜 포맷에 대한 고민</summary>
+  Year / Month를 따로 받아오는 현재 방식에 대해 고민하였습니다.<br>
+  프론트에서 날짜 UI를 사용할 때 데이터를 일관되게 처리할 방법을 찾아보았습니다.<br>
+  이 과정에서 조회 시 사용했던 JsonFormat 방식과 YearMonth를 활용해 입력 받는 방법을 알게 되었습니다.<br>
+  이번 프로젝트에서 이 부분은 리팩토링을 진행하지 않았지만, 협업에 대한 생각이 확장되는 시간이었습니다.
 </details>
