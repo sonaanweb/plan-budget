@@ -122,7 +122,7 @@ public class SpendService {
 
     // 지출 상세
     public SpendDetailDto getSpendDetail(Member member, Long spendId) {
-        Spend spend = spendRepository.findByIdAndMemberId(spendId, member)
+        Spend spend = spendRepository.findByIdAndMemberId(spendId, member.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.SPEND_NOT_FOUND));
 
         if (!spend.getMember().getId().equals(member.getId())) {

@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,9 +44,9 @@ public class ConsultingService {
 
         log.info("today spends : {}", spends);
 
-        // 데이터가 없는 경우
+        // 오늘의 지출 데이터가 없는 경우
         if (spends.isEmpty()) {
-            return new TodaySpendDto(0, 0, 0.0, List.of(), Optional.of("지출 데이터가 없습니다."));
+            return new TodaySpendDto(0, 0, 0.0, List.of(), Optional.of("지출 데이터가 없습니다."), List.of());
         }
 
         // 3. 총 지출 금액 계산
@@ -57,30 +58,40 @@ public class ConsultingService {
         Map<Long, List<Spend>> categorySpendMap = spends.stream()
                 .collect(Collectors.groupingBy(spend -> spend.getCategory().getId()));
 
-        List<CategorySpendDto> categorySpendDto = categorySpendMap.entrySet()
-                .stream()
-                .map(entry -> {
-                    Long categoryId = entry.getKey();
-                    List<Spend> categorySpends = entry.getValue();
+        List<CategorySpendDto> categorySpendDto = new ArrayList<>();
+        List<String> unBudgetCategories = new ArrayList<>();
 
-                    // 해당 카테고리의 오늘 지출 금액
-                    int spentAmount = categorySpends.stream()
-                            .mapToInt(Spend::getAmount)
-                            .sum();
+        for (Map.Entry<Long, List<Spend>> entry : categorySpendMap.entrySet()) {
+            Long categoryId = entry.getKey();
+            List<Spend> categorySpends = entry.getValue();
 
-                    // 해당 월의 예산(카테고리) 하루 예산 계산 로직 = 총액 / 일수(lengthOfMonth)
-                    Budget budget = budgetRepository.findByMemberAndCategoryAndYearAndMonth(
-                            member.getId(), categoryId, today.getYear(), today.getMonthValue()
-                    ).orElseThrow(() -> new CustomException(ErrorCode.BUDGET_NOT_FOUND));
+            // 해당 카테고리의 오늘 지출 금액
+            int spentAmount = categorySpends.stream()
+                    .mapToInt(Spend::getAmount)
+                    .sum();
 
-                    int dailyBudget = (int) Math.round((double) budget.getAmount() / today.lengthOfMonth());
+            // 해당 월의 예산(카테고리) 하루 예산 계산 로직 = 총액 / 일수(lengthOfMonth)
+            Optional<Budget> budgetOptional = budgetRepository.findByMemberAndCategoryAndYearAndMonth(
+                    member.getId(), categoryId, today.getYear(), today.getMonthValue()
+            );
 
-                    // 위험도 계산
-                    int risk = (int) Math.round((double) spentAmount / dailyBudget * 100); // 반올림
+            // 예산에 등록되지 않은 카테고리 처리
+            if (budgetOptional.isEmpty()) {
+                log.warn("예산 등록되지 않은 카테고리가 있습니다: {}", categoryId);
+                String categoryName = entry.getValue().get(0).getCategory().getCategoryName();
+                unBudgetCategories.add(categoryName); // 예산 미등록 카테고리 수집
+                categorySpendDto.add(new CategorySpendDto(categoryName, 0, spentAmount, 0)); // 기본값 처리
+                continue; // 다음 카테고리로 넘어감
+            }
 
-                    return new CategorySpendDto(entry.getValue().get(0).getCategory().getCategoryName(), dailyBudget, spentAmount, risk);
-                })
-                .collect(Collectors.toList());
+            Budget budget = budgetOptional.get();
+            int dailyBudget = (int) Math.round((double) budget.getAmount() / today.lengthOfMonth());
+
+            // 위험도 계산
+            int risk = (int) Math.round((double) spentAmount / dailyBudget * 100); // 반올림
+
+            categorySpendDto.add(new CategorySpendDto(entry.getValue().get(0).getCategory().getCategoryName(), dailyBudget, spentAmount, risk));
+        }
 
         // 5. 사용 추천 금액(total)
         int recommendedAmount = categorySpendDto.stream()
@@ -94,16 +105,20 @@ public class ConsultingService {
                 .orElse(0);
 
         // 응답값
-        return new TodaySpendDto(totalSpentAmount, recommendedAmount, totalRisk, categorySpendDto, Optional.empty());
+        return new TodaySpendDto(totalSpentAmount, recommendedAmount, totalRisk, categorySpendDto, Optional.empty(), unBudgetCategories);
     }
 
     @Transactional
-    // @Scheduled(cron = "0 * * * * ?") 1분 TEST
     @Scheduled(cron = "0 0 20 * * ?") // 매일 20:00에 실행
     public void sendDailyNotifications() {
-        List<Member> members = memberRepository.findAll(); // TEST : 모든 회원 todo: 알림 승인한 회원만 + 예외처리 필요
+        List<Member> members = memberRepository.findAll();
 
-        for (Member member : members) {
+        // 알림 승인 회원에게만 전송 필터링
+        List<Member> notifiedMembers = members.stream()
+                .filter(Member::getNotificationEnabled)
+                .collect(Collectors.toList());
+
+        for (Member member : notifiedMembers) {
             // 각 회원의 오늘 지출 정보 가져오기
             TodaySpendDto todaySpend = getTodaySpend(member);
             String message = NotificationUtils.createNotificationMessage(member, todaySpend);
