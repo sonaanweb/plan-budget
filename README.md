@@ -335,7 +335,9 @@
 <details>
   <summary>회원가입</summary>
   
-  아이디와 비밀번호를 입력한 회원가입
+  아이디와 비밀번호를 입력한 회원가입<br>
+  알림설정 컬럼은 지출 알림 기능에서 사용됩니다.<br>
+  (* 기본 값 false, true == 알림 전송)
   
 <strong>Request</strong>
 
@@ -343,6 +345,7 @@
 |:---------------|:----------|:----------------|
 | `account`      | `String`  | (Required) 계정   |
 | `password`     | `String`  | (Required) 비밀번호 |
+| `notificationEnabled`     | `Boolean`  | 알림 설정 |
 
 `POST /api/members/join`
 ```json
@@ -719,8 +722,10 @@ refreshToken은 유지, accessToken은 재발급
 <details>
   <summary>오늘의 지출</summary>
 
-  사용자는 오늘의 지출 내역을 알림으로 받을 수 있습니다. (Scheduled: 매일 오후 8시 실행) <br>
-  오늘 사용한 총 지출액, 등록한 예산 범위 내 하루 추천 사용액, 총 위험도, 카테고리 별 추천 사용액과 위험도 등을 알려줍니다.
+  사용자는 오늘의 지출 내역을 알림으로 받을 수 있습니다. (Scheduled: 매일 오후 8시 실행 - 알림설정 허용한 사용자에게만 발송) <br>
+  오늘 사용한 총 지출액, 등록한 예산 범위 내 하루 추천 사용액, 총 위험도, 카테고리 별 추천 사용액과 위험도 등을 알려줍니다.<br>
+  등록 된 지출 중 `비교 데이터` ( 지난 달, 지난 주 예산으로 등록된 카테고리 별 지출 )가 없을 시 신규데이터로 판단하여 증가율 100%로 설정<br>
+  예산에 등록되지 않은 카테고리 지출은 별도로 위험도를 알려주지 않고, 등록되지 않은 카테고리임을 알려줍니다.
   <br>
   
 <strong>Response</strong>
@@ -738,7 +743,19 @@ refreshToken은 유지, accessToken은 재발급
             "spentAmount": 7000,
             "risk": 434.0
         }
+    ],...
+--- 설정하지 않은 카테고리가 있으면
+        {
+            "categoryName": "취미/여가",
+            "todayRecommendedAmount": 0,
+            "spentAmount": 15000,
+            "risk": 0.0
+        }
     ],
+    "message": null,
+    "unBudgetCategories": [
+        "취미/여가"
+    ]
 }
 ```
 ```
@@ -922,7 +939,7 @@ Instant 클래스를 사용하여 현재 시각을 가져온 뒤, expirationTime
   첫 번째는 List를 사용하여 존재하지 않는 카테고리를 모아 saveAll로 저장하는 방식이고, <br>
   두 번째는 Set을 활용하여 이미 존재하는 카테고리 이름을 데이터베이스에서 가져와 중복 확인을 최소화하는 방식입니다.<br>
 두 번째 방법을 선택한 이유는 List 방식은 각 카테고리의 존재 여부를 체크하기 위해 여러 번의 데이터베이스 호출이 발생하기 때문입니다.
-  <br>고정 카테고리가 10가지로 적은 데이터이므로 Set을 활용한 방식이 더 효율적이지 않을까 하는 판단이었습니다.
+  <br>고정 카테고리는 10가지의 적은 데이터이므로 Set을 활용해 데이터베이스 호출을 줄였습니다.
 </details>
 <details>
   <summary> 날짜 포맷에 대한 고민</summary>
