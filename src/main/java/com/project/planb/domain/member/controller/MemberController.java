@@ -7,6 +7,7 @@ import com.project.planb.domain.member.dto.MemberLoginReqDto;
 import com.project.planb.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody MemberJoinReqDto reqDto) {
+    public ResponseEntity<String> join(@RequestBody @Valid MemberJoinReqDto reqDto) {
         memberService.join(reqDto);
         return ResponseEntity.ok("회원가입이 성공적으로 완료되었습니다.");
     }

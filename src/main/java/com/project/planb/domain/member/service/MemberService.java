@@ -35,6 +35,7 @@ public class MemberService {
         Member member = Member.builder()
                 .account(reqDto.account())
                 .password(passwordEncoder.encode(reqDto.password()))
+                .notificationEnabled(reqDto.notificationEnabled())
                 .build();
         memberRepository.save(member);
     }

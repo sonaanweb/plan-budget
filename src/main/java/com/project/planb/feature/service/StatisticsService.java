@@ -111,8 +111,13 @@ public class StatisticsService {
         );
     }
 
+    /**
+     * 증감 비율 로직 = 이번주/ 이번달 신규 카테고리 지출이면 100% 표시
+     */
     private int calculateIncreaseRate(int lastValue, int currentValue) {
-        if (lastValue == 0) return 0; // 이전 값이 0일 때는 0 반환할 것
+        if (lastValue == 0) {
+            return (currentValue == 0) ? 0 : 100; // 이전 값이 0이고 현재 값이 0이 아니면 100% 증가
+        }
         return (int) (((double) (currentValue - lastValue) / lastValue) * 100); // 증가율 계산
     }
 

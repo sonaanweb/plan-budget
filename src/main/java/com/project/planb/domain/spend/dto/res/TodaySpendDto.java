@@ -8,7 +8,8 @@ public record TodaySpendDto(
         int recommendedAmount,   // 사용 적정 금액
         double totalRisk,        // 종합 위험도
         List<CategorySpendDto> categories,   // 카테고리별 지출 정보 담을 것 List
-        Optional<String> message
+        Optional<String> message,
+        List<String> unBudgetCategories // 예산 미등록 카테고리
 ) {
     // 오늘의 지출 정보를 위한 내부 클래스
     public record CategorySpendDto(

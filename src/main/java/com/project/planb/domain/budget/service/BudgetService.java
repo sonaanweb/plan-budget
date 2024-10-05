@@ -76,8 +76,8 @@ public class BudgetService {
 
     // 년 월 예산 조회
     public BudgetResDto getBudgetsByMemberAndDate(Member member, BudgetPeriodReqDto budgetPeriodReqDto) {
-        int year = (budgetPeriodReqDto.year() != 0) ? budgetPeriodReqDto.year() : LocalDate.now().getYear();
-        int month = (budgetPeriodReqDto.month() != 0) ? budgetPeriodReqDto.month() : LocalDate.now().getMonthValue();
+        int year = (budgetPeriodReqDto.year() != null) ? budgetPeriodReqDto.year() : LocalDate.now().getYear();
+        int month = (budgetPeriodReqDto.month() != null) ? budgetPeriodReqDto.month() : LocalDate.now().getMonthValue();
 
         List<Budget> budgets = budgetRepository.findByMemberIdAndYearAndMonth(member.getId(), year, month);
 

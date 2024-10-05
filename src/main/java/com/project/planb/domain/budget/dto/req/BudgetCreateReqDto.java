@@ -11,7 +11,7 @@ public record BudgetCreateReqDto(
         @Min(value = 0, message = "0 이상이어야 합니다.")
         Integer amount,
         @NotNull(message = "연도를 입력해주세요")
-        int year,
+        Integer year,
         @NotNull(message = "달을 입력해주세요")
         @Range(min = 1, max = 12, message = "달은 1에서 12 사이의 값이어야 합니다.")
         int month

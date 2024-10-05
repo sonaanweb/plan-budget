@@ -23,17 +23,22 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private Boolean notificationEnabled;
+
     // 객체 생성
     @Builder
-    public Member(String account, String password){
+    public Member(String account, String password, Boolean notificationEnabled){
         this.account = account;
         this.password = password;
+        this.notificationEnabled = notificationEnabled != null ? notificationEnabled : false;
     }
 
     // 저장 & 연관 객체 메소드
-    public Member(Long id, String account, String password){
+    public Member(Long id, String account, String password, Boolean notificationEnabled){
         this.id = id;
         this.account = account;
         this.password = password;
+        this.notificationEnabled = notificationEnabled != null ? notificationEnabled : false;
     }
 }
