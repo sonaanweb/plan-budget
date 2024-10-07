@@ -42,6 +42,9 @@ public class JwtTokenProvider {
     @Value("${security.jwt.prefix}")
     private String bearerPrefix;
 
+    @Value("${security.jwt.token-blacklist-TTL}")
+    private int tokenBlacklistTTL; // 블랙리스트 TTL 값 추가
+
     private final PrincipalDetailsService principalDetailsService;
 
     // 객체 생성 후 초기화 알고리즘 BASE64
@@ -106,6 +109,11 @@ public class JwtTokenProvider {
             return bearerToken.substring(bearerPrefix.length()).trim(); // "Bearer " 부분 제거
         }
         return null;
+    }
+
+    // 블랙리스트 TTL
+    public int getTokenBlacklistTTL() {
+        return tokenBlacklistTTL;
     }
 
     // 토큰 유효성 검사

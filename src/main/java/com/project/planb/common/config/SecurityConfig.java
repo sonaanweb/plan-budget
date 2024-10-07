@@ -32,12 +32,19 @@ public class SecurityConfig {
                                 "/swagger-ui/**",            // Swagger UI 페이지
                                 "/swagger-ui.html",          // Swagger UI HTML 페이지
                                 "/api/members/login",        // 로그인
-                                "/api/members/join",          // 회원가입
-                                "/api/members/reissue"
+                                "/api/members/join"         // 회원가입
                         ).permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터
-
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+                // 로그아웃 설정
+                /*
+                .logout(logout -> logout
+                        .logoutUrl("/api/members/logout") // 로그아웃 요청 URL
+                        .logoutSuccessUrl("/api/members/login") // 로그아웃 성공 시 리다이렉트할 URL
+                        .invalidateHttpSession(true) // 세션 무효화
+                        .deleteCookies("") // 쿠키 삭제
+                        .permitAll());
+                */
         return http.build();
     }
 }

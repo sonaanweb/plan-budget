@@ -17,4 +17,5 @@ public class RefreshToken {
     private String refreshToken;
 
     private String memberId;
+    private String account;
 }
