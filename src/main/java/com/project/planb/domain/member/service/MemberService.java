@@ -55,7 +55,7 @@ public class MemberService {
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
 
         // 리프레시 토큰을 Redis에 저장
-        RefreshToken refreshTokenEntity = new RefreshToken(refreshToken, String.valueOf(member.getId()));
+        RefreshToken refreshTokenEntity = new RefreshToken(refreshToken, String.valueOf(member.getId()), member.getAccount()); // account 추가
         refreshTokenRepository.save(refreshTokenEntity);
 
         return new TokenResDto(accessToken, refreshToken);
@@ -70,7 +70,7 @@ public class MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
 
         // 2. 저장된 리프레시 토큰이 유효하다면 새로운 액세스 토큰 생성
-        String newAccessToken = jwtTokenProvider.createAccessToken(savedToken.getMemberId());
+        String newAccessToken = jwtTokenProvider.createAccessToken(savedToken.getAccount());
 
         // 3. 새로운 액세스 토큰 반환
         return new TokenResDto(newAccessToken, savedToken.getRefreshToken());
