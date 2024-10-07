@@ -112,6 +112,7 @@
 | **Members API**  | POST        | `/api/members/reissue`      | 엑세스토큰 재발급| 
 | **Members API**  | POST        | `/api/members/join`         | 회원가입        |
 | **Members API**  | POST        | `/api/members/login`        | 로그인          |
+| **Members API**  | POST        | `/api/members/logout`       | 로그아웃       |
 | **Category API** | GET         | `/api/categories`           | 등록 카테고리 목록|
 | **Budgets API**  | POST        | `/api/budgets`              | 예산 등록      |
 | **Budgets API**  | GET         | `/api/budgets`              | 예산 조회      |
@@ -121,25 +122,25 @@
 | **Spends API**   | GET         | `/api/spends`            | 지출 리스트 조회  |
 | **Spends API**   | GET         | `/api/spends/{spendId}`  | 지출 상세 조회   |
 | **Spends API**   | GET         | `/api/spends/today`       | 오늘의 지출 상황 안내  |
-| **Statistics API** | GET       | `/api/Statistics/weekly`  | 주간 지출 비교 통계 |
-| **Statistics API** | GET       | `/api/Statistics/monthly`  | 월간 지출 비교 통계 |
-| **Statistics API** | GET       | `/api/Statistics/budgets`  | 월간 사용량 통계 |
+| **Statistics API** | GET       | `/api/statistics/weekly`  | 주간 지출 비교 통계 |
+| **Statistics API** | GET       | `/api/statistics/monthly`  | 월간 지출 비교 통계 |
+| **Statistics API** | GET       | `/api/statistics/budgets`  | 월간 사용량 통계 |
 
 <details>
 <summary><strong>ERD</strong></summary>
-<img src=https://github.com/user-attachments/assets/8f8552be-2321-42c0-aefe-d9b0ffc974a9>
+<img src=https://github.com/user-attachments/assets/199c7559-8887-4611-85c5-96bbd160f665>
 </details>
 
 <details>
 <summary><strong>Swagger</strong></summary>
-<img src=https://github.com/user-attachments/assets/fc67b07e-a0dd-4bac-8679-2122570f2410>
+<img src=https://github.com/user-attachments/assets/7a1f90c7-1455-476c-9edf-813fdf5aaf11>
 </details>
 
 <details>
 <summary><strong>디렉토리 구조</strong></summary>
   
 ```plaintext
-   ├─main
+├─main
 │  ├─generated
 │  │  └─com
 │  │      └─project
@@ -186,6 +187,7 @@
 │  │              │  │  │      PrincipalDetailsService.java
 │  │              │  │  │      
 │  │              │  │  ├─dto
+│  │              │  │  │      LogoutRequestDto.java
 │  │              │  │  │      RefreshToken.java
 │  │              │  │  │      TokenRequestDto.java
 │  │              │  │  │      TokenResDto.java
@@ -426,6 +428,33 @@ refreshToken은 유지, accessToken은 재발급
 }  
 ```  
 </details>
+
+<details>
+  <summary>로그아웃</summary>
+
+  사용자 로그아웃 시 엑세스 토큰(redis 블랙리스트에 추가), 리프레시 토큰이 무효화됩니다.
+  
+<strong>Request</strong>  
+
+| Field | Type | Description |  
+|:---------------|:----------|:------------------------|
+| `AccessToken` | `String` | (Required) accessToken | 
+| `RefreshToken` | `String` | (Required) refreshToken |  
+
+`POST /api/members/logout`  
+```json  
+{
+"accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3YW50...",
+"refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3YW50ZWQxIiwiaWF0IjoxNz...."  
+}  
+```  
+<strong>Response</strong>  
+
+```text
+로그아웃이 성공적으로 완료되었습니다.
+```
+</details>
+
 
 #### Category 📂
 <details>
@@ -920,7 +949,7 @@ Instant 클래스를 사용하여 현재 시각을 가져온 뒤, expirationTime
 
 ### 5. 회고
 이번 개인 프로젝트를 진행하며 사용해보지 않았던 기술에 대한 두려움을 덜어낼 수 있었습니다.
-스프링 시큐리티나 QueryDsl과 같은 기술을 사용해보며 개인적으로 부족한 점도 많았고, 어려운 점 또한 많았지만 발전 가능성에 대해 한발자국 더 나아간 것 같습니다.
+스프링 시큐리티나 QueryDsl과 같은 기술을 사용해보며 개인적으로 부족한 점도 많았고, 어려운 점 또한 많았지만 발전 가능성을 향해 한발자국 더 나아간 것 같습니다.
 <details>
   <summary> 사용자에게 유용할 통계는 무엇이 있을까?</summary>
   🪄`N요일` 지출 비교 통계를 주간통계로 변경하였습니다.<br>
@@ -932,19 +961,24 @@ Instant 클래스를 사용하여 현재 시각을 가져온 뒤, expirationTime
 </details>
 <details>
   <summary> 기본 카테고리 구현 방식</summary>
-  기본으로 고정된 카테고리를 추가하기 위해 초기화 데이터를 코드로 작성하는 방식을 선택했습니다. <br>
-  SQL 파일을 사용하는 방법도 있지만, 유연성 면에서 자바 코드가 더 적합하다고 판단했습니다. <br>
-  이전 프로젝트에서 파일 업로드 시 오류가 발생하면 프로젝트가 실행되지 않았던 경험이 있어, 이러한 문제를 피하기 위해 사용해보지 않았던 코드 구현방식으로 구현해보았습니다. <br><br>
+  고정된 카테고리를 추가하기 위해 초기화 데이터를 Java 코드로 작성하기로 결정했습니다. <br>
+  파일 업로드 시 내부파일 오류로 인해 프로젝트가 실행되지 않은 경험이 있어 이를 방지하기 위해 코드 구현 방식을 선택했습니다.<br>
   또한 초기화 시 두 가지 방법을 비교하였습니다. <br>
   첫 번째는 List를 사용하여 존재하지 않는 카테고리를 모아 saveAll로 저장하는 방식이고, <br>
   두 번째는 Set을 활용하여 이미 존재하는 카테고리 이름을 데이터베이스에서 가져와 중복 확인을 최소화하는 방식입니다.<br>
-두 번째 방법을 선택한 이유는 List 방식은 각 카테고리의 존재 여부를 체크하기 위해 여러 번의 데이터베이스 호출이 발생하기 때문입니다.
-  <br>고정 카테고리는 10가지의 적은 데이터이므로 Set을 활용해 데이터베이스 호출을 줄였습니다.
+  이 프로젝트에서는 두 번째 방식을 선택하였는데, List 방식은 각 카테고리의 존재 여부를 체크하기 위해 여러 번의 데이터베이스 호출을 발생시키기 때문입니다.<br>
+  이를 줄이기 위해 Set을 활용하여 데이터베이스 호출을 최소화하였습니다.
 </details>
 <details>
   <summary> 날짜 포맷에 대한 고민</summary>
   Year / Month를 따로 받아오는 현재 방식에 대해 고민하였습니다.<br>
   프론트에서 날짜 UI를 사용할 때 데이터를 일관되게 처리할 방법을 찾아보았습니다.<br>
   이 과정에서 조회 시 사용했던 JsonFormat 방식과 YearMonth를 활용해 입력 받는 방법을 알게 되었습니다.<br>
-  이번 프로젝트에서 이 부분은 리팩토링을 진행하지 않았지만, 협업에 대한 생각이 확장되는 시간이었습니다.
+  이번 프로젝트에서 이 부분은 리팩토링을 진행하지 않았지만, 협업에 대한 사고가 확장되는 시간이었습니다.
+</details>
+<details>
+  <summary> 스프링 시큐리티 도입 회고..</summary>
+  시큐리티에 대해서는 아쉬움이 많이 남은 프로젝트였습니다.<br>
+  기능 구현을 우선으로 하다보니 사용자 API와 토큰관련 클래스 분리나, 핸들러 사용 등 유용한 기능들을 많이 사용하지 못한 것이 마음에 남습니다.<br>
+  시큐리티 관련 코드는 꾸준히 공부하면서 디벨롭 해나가는 게 좋을 것 같습니다.
 </details>
