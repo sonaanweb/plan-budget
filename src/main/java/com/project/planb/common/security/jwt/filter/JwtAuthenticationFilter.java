@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,6 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 토큰이 존재하고 유효한 경우
         if (token != null && jwtTokenProvider.validateToken(token)) {
+
+            if (redisTemplate.hasKey(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                return; // 필터 체인 종료
+            }
+
             // 계정 정보 가져오기
             String account = jwtTokenProvider.getAccountFromToken(token);
 

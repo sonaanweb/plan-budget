@@ -1,5 +1,6 @@
 package com.project.planb.domain.member.controller;
 
+import com.project.planb.common.security.dto.LogoutRequestDto;
 import com.project.planb.common.security.dto.TokenRequestDto;
 import com.project.planb.common.security.dto.TokenResDto;
 import com.project.planb.domain.member.dto.MemberJoinReqDto;
@@ -46,5 +47,12 @@ public class MemberController {
     public ResponseEntity<TokenResDto> reissueToken(@RequestBody TokenRequestDto requestDto) {
         TokenResDto tokenResDto = memberService.reissueToken(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(tokenResDto);
+    }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody LogoutRequestDto requestDto) {
+        memberService.logout(requestDto);
+        return ResponseEntity.ok("로그아웃이 성공적으로 완료되었습니다.");
     }
 }
