@@ -41,7 +41,7 @@ public class BudgetServiceTest {
     @BeforeEach
     public void setUp() {
         // MockitoAnnotations.openMocks(this); // Mockito 초기화 - junit5 ExtendWith 어노테이션으로 인해 삭제
-        member = new Member(1L, "testAccount", "1234");
+        member = new Member(1L, "testAccount", "1234", false);
         category = new Category(1L, "Food");
     }
 

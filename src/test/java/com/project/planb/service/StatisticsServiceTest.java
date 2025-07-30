@@ -50,7 +50,7 @@ public class StatisticsServiceTest {
 
     @BeforeEach
     public void setUp() {
-        member = new Member(1L, "testAccount", "1234");
+        member = new Member(1L, "testAccount", "1234",false);
 
         // 카테고리 객체 초기화
         categories = Arrays.asList(
