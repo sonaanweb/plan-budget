@@ -139,7 +139,7 @@
 
 ### 📝 API 명세서
 
-[➡️➡️➡️ API 명세 상세보기]()
+[➡️➡️➡️ API 명세 상세보기로 이동](https://github.com/sonaanweb/plan-budget/blob/main/docs/api.md)
 
 | API Type         | Http Method | URL                         | Description |
 |------------------|-------------|-----------------------------|---------------- |
